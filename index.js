@@ -41,10 +41,10 @@ client.on("messageCreate", (message) =>{
           "type": "rich",
           "title": "List of Commmands",
           "description": "",
-          "color": x346bc90,
+          "color": 15548997,
           "fields": [
             {
-              "name": "$Lauterbach",
+              "name": "$lauterbach",
               "value": "shows the man himself"
             },
             {
@@ -89,7 +89,7 @@ client.on("messageCreate", (message) =>{
             "fields": [
               {
                 "name": "Help",
-                "value": 'to see a list of commands please type "$HELP"'
+                "value": 'to see a list of commands please type "$help"'
               }
             ],
             "image": {
