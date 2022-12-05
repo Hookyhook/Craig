@@ -5,7 +5,8 @@ exports.meme = async (client, interaction) => {
     let subReddit = [
         'techhumor',
         'programmerhumor',
-        'ITMemes'
+        'ITMemes',
+        'memes'
     ]
 
     let pickSubReddit = subReddit[Math.floor(Math.random() * subReddit.length)]
