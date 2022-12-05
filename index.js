@@ -8,6 +8,9 @@ const commands = [
   {
     name:"lauterbach",
     description:"was wohl?????"
+  },{
+    name: "random",
+    description:"????"
   }
 ];
 
@@ -31,17 +34,20 @@ client.on('ready', () => {
   console.log("Logged in as ${client.user.tag}!");
 });
 
+
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'ping') {
     await interaction.reply('Pong!');
   }
-  if (interaction.commandName === 'ping') {
-    await interaction.reply('Pong!');
-  }
   if (interaction.commandName === 'lauterbach') {
     await interaction.reply("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg");
+  }
+  if(interaction.commandName === "random"){
+    let random = Math.random() * 100;
+    random = Math.round(random)
+    await interaction.reply(random.toString())
   }
 
 
