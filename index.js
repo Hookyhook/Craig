@@ -1,5 +1,4 @@
-const { REST, Routes } = require('discord.js');
-const meme = require("./meme.js")
+const { REST, Routes, Embed, EmbedBuilder } = require('discord.js');
 
 const commands = [
   {
@@ -32,21 +31,28 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.on('ready', () => {
-  console.log("Logged in as ${client.user.tag}!");
+  console.log(`Logged in as ${client.user.tag}!`);
 });
 
+client.on("messageCreate", function(message){
+  console.log(`a message was created`);
+  console.log({message});
+});
 
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'ping') {
+    let res = new EmbedBuilder();
+    res.setColor(0x0099FF);
+    res.setImage("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg")
     await interaction.reply('Pong!');
   }
   if (interaction.commandName === 'lauterbach') {
     await interaction.reply("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg");
   }
   if(interaction.commandName === "random"){
-    await interaction.reply("NO")
+    await interaction.reply("NO");
   }
 
 
