@@ -46,7 +46,7 @@ client.on('interactionCreate', async interaction => {
     await interaction.reply("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg");
   }
   if(interaction.commandName === "random"){
-    await meme.meme(client,interaction);
+    await interaction.reply("NO")
   }
 
 
