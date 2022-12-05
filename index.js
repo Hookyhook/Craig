@@ -4,10 +4,8 @@ const commands = [
   {
     name: 'ping',
     description: 'Replies with Pong!',
-  },{
-    name:"hi",
-    description:"hi"
-  },{
+  },
+  {
     name:"lauterbach",
     description:"was wohl?????"
   }
