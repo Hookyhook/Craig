@@ -2,13 +2,6 @@ const { REST, Routes, Embed, EmbedBuilder, channelLink } = require('discord.js')
 const meme = require("./meme.js")
 const commands = [
   {
-    name: 'ping',
-    description: 'Replies with Pong!',
-  },
-  {
-    name:"lauterbach",
-    description:"was wohl?????"
-  },{
     name: "meme",
     description:"????"
   }
@@ -38,33 +31,83 @@ client.on('ready', () => {
 
 client.on("messageCreate", (message) =>{
   if (message.author.bot){return}
+
   if(message.content.startsWith("$")){
     console.log(`a message was created(/)`);
-    message.channel.send({
-    embeds:[{
-      title:"non / Command",
-      description:"an non / command was run",
-      color:012156
-    }],
-    });
+    //help----------------------------------------------------
+    if(message.content == "$help" ){
+      message.channel.send({"embeds":[
+        {
+          "type": "rich",
+          "title": "List of Commmands",
+          "description": "",
+          "color": x346bc90,
+          "fields": [
+            {
+              "name": "$Lauterbach",
+              "value": "shows the man himself"
+            },
+            {
+              "name":"$help",
+              "value": "shows a list of commands"
+            },
+            {
+              "name":"/meme",
+              "value": "shows a random meme related to IT from reddit"
+            }
+          ]
+        }
+      ]}); 
+    }else if(message.content == "$lauterbach"){
+      message.channel.send({
+        "embeds": [
+          {
+            "type": "rich",
+            "title": "Lauterbach",
+            "description": "THE MAN HIMSELF",
+            "color": 0x5aff07,
+            "image": {
+              "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg",
+              "height": 100,
+              "width": 100
+            },
+            "footer": {
+              "text": "FULL NAME:Karl Wilhelm Lauterbach \nAGE: 59 Jahre" 
+            }
+          }
+        ]
+      })
+    }else{
+      //message not knows-------
+      message.channel.send({
+        "embeds": [
+          {
+            "type": "rich",
+            "title": "Unknown Command",
+            "description": "This commad is not know",
+            "color": 15548997,
+            "fields": [
+              {
+                "name": "Help",
+                "value": 'to see a list of commands please type "$HELP"'
+              }
+            ],
+            "image": {
+              "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Confused.svg/2048px-Confused.svg.png",
+              "height": 100,
+              "width": 100
+            }
+          }
+        ]
+        });
+    }
   }else{
-    console.log("noting to do with me (/)")
-  }
-  
-});
+    console.log("not my message(/)")
+}})
 
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
-  if (interaction.commandName === 'ping') {
-    let res = new EmbedBuilder();
-    res.setColor(0x0099FF);
-    res.setImage("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg")
-    interaction.reply("PONG!!!!!!!!!!!!!!!!!!")
-  }
-  if (interaction.commandName === 'lauterbach') {
-    await interaction.reply("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg");
-  }
   if(interaction.commandName === "meme"){
     await meme.meme(client,interaction);
   }

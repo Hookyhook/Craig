@@ -1,6 +1,5 @@
-
 const { EmbedBuilder, Colors } = require("discord.js")
-const axios = require("axios")
+const axios = require("axios");
 exports.meme = async (client, interaction) => {
 
     let subReddit = [
@@ -11,7 +10,8 @@ exports.meme = async (client, interaction) => {
 
     let pickSubReddit = subReddit[Math.floor(Math.random() * subReddit.length)]
 
-    let { data } = await axios.default.get(`https://meme-api.com/gimme/${pickSubReddit}`);
+    let { data } = await axios.get(`https://meme-api.com/gimme/${pickSubReddit}`);
+    console.log(data);
 
     let postMeme = new EmbedBuilder()
         .setAuthor({
