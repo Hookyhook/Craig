@@ -45,9 +45,20 @@ client.on('interactionCreate', async interaction => {
     await interaction.reply("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg");
   }
   if(interaction.commandName === "random"){
-    let random = Math.random() * 100;
-    random = Math.round(random)
-    await interaction.reply(random.toString())
+    let random = Math.random() * 2;
+    console.log(random);
+    random = Math.round(random);
+    console.log(random);
+  
+    if(random == 0){
+      await interaction.reply("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg");
+    }
+    if(random == 1){
+      await interaction.reply("WTF");
+    }
+    if(random == 2){
+      await interaction.reply("Hahahahahhahahahahhahhah i hack you");
+    }
   }
 
 
