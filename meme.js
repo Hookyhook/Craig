@@ -6,12 +6,12 @@ exports.meme = async (client, interaction) => {
     let subReddit = [
         'techhumor',
         'programmerhumor',
-        'ITMemes
+        'ITMemes'
     ]
 
     let pickSubReddit = subReddit[Math.floor(Math.random() * subReddit.length)]
 
-    let { data } = await axios.get(`https://meme-api.herokuapp.com/gimme/${pickSubReddit}`);
+    let { data } = await axios.default.get(`https://meme-api.com/gimme/${pickSubReddit}`);
 
     let postMeme = new EmbedBuilder()
         .setAuthor({

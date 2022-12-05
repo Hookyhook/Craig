@@ -1,5 +1,5 @@
-const { REST, Routes, Embed, EmbedBuilder } = require('discord.js');
-
+const { REST, Routes, Embed, EmbedBuilder, channelLink } = require('discord.js');
+const meme = require("./meme.js")
 const commands = [
   {
     name: 'ping',
@@ -9,7 +9,7 @@ const commands = [
     name:"lauterbach",
     description:"was wohl?????"
   },{
-    name: "random",
+    name: "meme",
     description:"????"
   }
 ];
@@ -28,15 +28,29 @@ const rest = new REST({ version: '10' }).setToken("MTA0OTA0NTYyMTc2OTc2NDk4NQ.Gk
   }
 })();
 const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  const channel = client.channels.cache.get('<id>');
+  
 });
 
-client.on("messageCreate", function(message){
-  console.log(`a message was created`);
-  console.log({message});
+client.on("messageCreate", (message) =>{
+  if (message.author.bot){return}
+  if(message.content.startsWith("$")){
+    console.log(`a message was created(/)`);
+    message.channel.send({
+    embeds:[{
+      title:"non / Command",
+      description:"an non / command was run",
+      color:012156
+    }],
+    });
+  }else{
+    console.log("noting to do with me (/)")
+  }
+  
 });
 
 client.on('interactionCreate', async interaction => {
@@ -46,13 +60,13 @@ client.on('interactionCreate', async interaction => {
     let res = new EmbedBuilder();
     res.setColor(0x0099FF);
     res.setImage("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg")
-    await interaction.reply('Pong!');
+    interaction.reply("PONG!!!!!!!!!!!!!!!!!!")
   }
   if (interaction.commandName === 'lauterbach') {
     await interaction.reply("https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg/330px-MJK_67610_Karl_Lauterbach_%28Bundestag_2020%29.jpg");
   }
-  if(interaction.commandName === "random"){
-    await interaction.reply("NO");
+  if(interaction.commandName === "meme"){
+    await meme.meme(client,interaction);
   }
 
 
