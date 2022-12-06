@@ -1,4 +1,5 @@
 const { REST, Routes, Embed, EmbedBuilder, channelLink } = require('discord.js');
+const process = require('node:process');
 const meme = require("./meme.js")
 const commands = [
   {
@@ -25,9 +26,18 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  const channel = client.channels.cache.get('<id>');
+  const channel = client.channels.cache.get('1049677949881811005');
+  console.log("bot status channel: "+channel);
+  channel.send(":green_square:  ON  :green_square:");
   
 });
+process.on('exit', (code) => {
+  console.log('Process exit event with code: ', code);
+  const channel = client.channels.cache.get('1049677949881811005');
+  console.log("bot status channel: "+channel);
+  channel.send(":red_square:  OFF  :red_square:");
+});
+
 
 client.on("messageCreate", (message) =>{
   if (message.author.bot){return}

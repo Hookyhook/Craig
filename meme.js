@@ -12,7 +12,6 @@ exports.meme = async (client, interaction) => {
     let pickSubReddit = subReddit[Math.floor(Math.random() * subReddit.length)]
 
     let { data } = await axios.get(`https://meme-api.com/gimme/${pickSubReddit}`);
-    console.log(data);
 
     let postMeme = new EmbedBuilder()
         .setAuthor({
