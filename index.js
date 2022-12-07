@@ -62,6 +62,15 @@ client.on("messageCreate", (message) =>{
               "value": "shows a list of commands"
             },
             {
+              "name":"$lautergame",
+              "value":`
+                      Starts a game and you have to type what you see:
+            -Lauterbach : lauterbach
+            -Hr.Ulshöfer : ulsi
+            -POTUS: biden
+            `
+            },
+            {
               "name":"/meme",
               "value": "shows a random meme related to IT from reddit"
             }
@@ -87,7 +96,10 @@ client.on("messageCreate", (message) =>{
           }
         ]
       })
-    }else{
+    }else if(message.content == "$lautergame"){
+      console.log("started lautergame")
+    }else
+    {
       //message not knows-------
       message.channel.send({
         "embeds": [
