@@ -136,4 +136,4 @@ client.on('interactionCreate', async interaction => {
 
 
 }) 
-client.login("MTA0OTA0NTYyMTc2OTc2NDk4NQ.GkwrOp.h7KeSPiI3a_n4d6dXBj5QY_RLXXn_iXzMYWTyI");
+client.login("token herre");
