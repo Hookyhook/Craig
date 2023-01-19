@@ -21,39 +21,32 @@ exports.pi = async (message) => {
         else{
           //message.channel.send("P(" + randomX + "|" + randomY +") is not in the circle");
         }
-        /*
-        const lib = require('lib')({token: process.env.STDLIB_SECRET_TOKEN});
-
-await lib.discord.channels['@0.3.2'].messages.create({
-  "channel_id": `${context.params.event.channel_id}`,
-  "content": "",
-  "tts": false,
-  "embeds": [
-    {
-      "type": "rich",
-      "title": `PI`,
-      "description": "",
-      "color": 0x1f49ef,
-      "fields": [
-        {
-          "name": `Points:`,
-          "value": `123`,
-          "inline": true
-        },
-        {
-          "name": `Points in Circle:`,
-          "value": `123`,
-          "inline": true
-        },
-        {
-          "name": `PI:`,
-          "value": `123`,
-          "inline": true
-        }
-      ]
-    }
-  ]
-});*/
+        message.channel.send({
+        "embeds": [
+          {
+            "type": "rich",
+            "title": "PI",
+            "description": "",
+            "color": 0x1f49ef,
+            "fields": [
+              {
+                "name": "Points:",
+                "value": points,
+                
+              },
+              {
+                "name": "Points in Circle:",
+                "value": pointsInCircle,
+              },
+              {
+                "name": "PI",
+                "value": "idk",
+              }
+            ]
+          }
+        ]
+      });
+        
       }
     }
 }
