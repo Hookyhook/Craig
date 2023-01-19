@@ -1,6 +1,7 @@
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager } = require('discord.js');
 const process = require('node:process');
 const meme = require("./meme.js")
+const pi = require("./pi.js")
 const commands = [
   {
     name: "meme",
@@ -99,36 +100,7 @@ client.on("messageCreate", (message) =>{
     }else if(message.content == "$lautergame"){
       console.log("started lautergame")
     }else if(message.content.startsWith("$pi")){
-     msg = message.content;
-      amount = msg.split(" ")[1];
-      amount = parseInt(amount);
-      if(isNaN(amount)){
-        message.channel.send("please enter a number");
-      }else {
-        let points = 0;
-        let pointsInCircle = 0;
-        for(let i = 1; i<= amount;i++){
-          
-          let randomX = Math.random(-1,1);
-          let randomY = Math.random(-1,1);
-          points++;
-          console.log(Math.sqrt(Math.pow(randomX,2),Math.pow(randomY,2)));
-          if(Math.sqrt(Math.pow(randomX,2),Math.pow(randomY,2) <= 1)){
-            //message.channel.send("P(" + randomX + "|" + randomY +") is in the circle");
-            pointsInCircle++;
-          }
-          else{
-            message.channel.send("P(" + randomX + "|" + randomY +") is not in the circle");
-
-          }
-          //message.channel.send("Points in Circle:" + pointsInCircle);
-          //message.channel.send("All Points:" + points);
-
-        }
-      }
-      
-
-     
+     pi.pi(message);     
     }else{
      
       //message not knows-------
@@ -167,4 +139,4 @@ client.on('interactionCreate', async interaction => {
 
 
 }) 
-client.login("token herre");
+client.login("token hier");
