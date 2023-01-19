@@ -139,4 +139,4 @@ client.on('interactionCreate', async interaction => {
 
 
 }) 
-client.login("token hier");
+client.login("token");
