@@ -1,16 +1,28 @@
-const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager } = require('discord.js');
+const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType } = require('discord.js');
 const process = require('node:process');
 const meme = require("./meme.js")
 const pi = require("./pi.js")
-const message = require("./messages.js")
+const usermessage = require("./usermessage.js")
 const commands = [
   {
     name: "meme",
     description:"????"
+  },{
+    name: "stats",
+    description:"gives stats dor how many messages you have sent in this server",
+    options: [
+      {
+        "name": "user",
+        "description": "from which user you want the stats",
+        "type": ApplicationCommandOptionType.User,
+        "required": true,
+        "value": "nice"
+      }
+    ]
   }
 ];
 
-const rest = new REST({ version: '10' }).setToken("MTA0OTA0NTYyMTc2OTc2NDk4NQ.GkwrOp.h7KeSPiI3a_n4d6dXBj5QY_RLXXn_iXzMYWTyI");
+const rest = new REST({ version: '10' }).setToken("token");
 
 (async () => {
   try {
@@ -36,16 +48,14 @@ process.on('exit', (code) => {
 //messages
 client.on("messageCreate", (message) =>{
   if (message.author.bot){return}
+  usermessage.messageUpdate(message);
   if(message.content.startsWith("$")){
-    console.log(`a message was created(/)`);
     if(message.content.startsWith("$pi")){
      pi.pi(message);     
     }
-  }else{
-    
   }
   //update message count
-  message.messageUpdate(message);
+  
 
 })
 
@@ -55,6 +65,10 @@ client.on('interactionCreate', async interaction => {
   if(interaction.commandName === "meme"){
     await meme.meme(client,interaction);
   }
+  if(interaction.commandName === "stats"){
+    await usermessage.giveStats(interaction);
+  }
+  interaction.user.id
 
 
 }) 

@@ -3,9 +3,9 @@ Creating database connection over the my mysql2 module.
 */
 const mysql = require("mysql2");
 const connection = mysql.createConnection({
-  host: "hahah",
-  user: "hahah",
-  password: "hahah",
+  host: "lsglab.ddns.net",
+  user: "lab",
+  password: "1234",
   database: "ParticlyHelper",
 });
 /*
