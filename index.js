@@ -26,7 +26,7 @@ const commands = [
   }
 ];
 
-const rest = new REST({ version: '10' }).setToken("token");
+const rest = new REST({ version: '10' }).setToken("asdadada");
 
 (async () => {
   try {
@@ -67,11 +67,11 @@ client.on('interactionCreate', async interaction => {
     await usermessage.giveStats(interaction);
   }
   //work
-  if(interaction.commandName === "stats"){
+  if(interaction.commandName === "work"){
     await money.work(interaction);
   }
   
 
 
 }) 
-client.login("token");
+client.login("asdad");
