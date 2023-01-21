@@ -1,8 +1,8 @@
-const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType } = require('discord.js');
-const process = require('node:process');
+const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray } = require('discord.js');
 const meme = require("./meme.js")
 const pi = require("./pi.js")
-const usermessage = require("./usermessage.js")
+const usermessage = require("./usermessage.js");
+const money = require("./money.js");
 const commands = [
   {
     name: "meme",
@@ -19,10 +19,14 @@ const commands = [
         "value": "nice"
       }
     ]
+  },
+  {
+    name: "work",
+    description: "work! This gives you money! You can do it once an hour"
   }
 ];
 
-const rest = new REST({ version: '10' }).setToken("token");
+const rest = new REST({ version: '10' }).setToken("MTA0OTA0NTYyMTc2OTc2NDk4NQ.GH0yVw.-Ws58OTo4oLNx_PRsQtte75MA62AD5WxwT_v8c");
 
 (async () => {
   try {
@@ -37,13 +41,7 @@ const rest = new REST({ version: '10' }).setToken("token");
 })();
 const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
-//
-process.on('exit', (code) => {
-  console.log('Process exit event with code: ', code);
-  const channel = client.channels.cache.get('1049677949881811005');
-  console.log("bot status channel: "+channel);
-  channel.send(":red_square:  OFF  :red_square:");
-});
+
 
 //messages
 client.on("messageCreate", (message) =>{
@@ -68,8 +66,12 @@ client.on('interactionCreate', async interaction => {
   if(interaction.commandName === "stats"){
     await usermessage.giveStats(interaction);
   }
-  interaction.user.id
+  //work
+  if(interaction.commandName === "stats"){
+    await money.work(interaction);
+  }
+  
 
 
 }) 
-client.login("token");
+client.login("MTA0OTA0NTYyMTc2OTc2NDk4NQ.GH0yVw.-Ws58OTo4oLNx_PRsQtte75MA62AD5WxwT_v8c");
