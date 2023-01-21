@@ -3,10 +3,7 @@ Creating database connection over the my mysql2 module.
 */
 const mysql = require("mysql2");
 const connection = mysql.createConnection({
-  host: "lsglab.ddns.net",
-  user: "lab",
-  password: "1234",
-  database: "ParticlyHelper",
+  "hahah"
 });
 /*
 IMPORTANT! crashes backend if DB connection cant be established
