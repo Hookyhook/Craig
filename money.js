@@ -207,7 +207,7 @@ exports.balance = async (interaction) => {
     console.log(level[3]);
     console.log(bar + "bar");
 
-    return await interaction.reply(
+    await interaction.reply(
         {
             "embeds": [
                 {
@@ -239,6 +239,7 @@ exports.balance = async (interaction) => {
             ]
         }
     );
+    return;
 }
 const lvl = [
     {name: "brokie", max: 10},

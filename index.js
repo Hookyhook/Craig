@@ -1,9 +1,10 @@
-const token = "bruh no";
+const token = "no";
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray,ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
 const meme = require("./meme.js")
 const pi = require("./pi.js")
 const usermessage = require("./usermessage.js");
 const money = require("./money.js");
+const tictactoe = require("./tictactoe.js");
 const commands = [
   {
     name: "meme",
@@ -32,8 +33,19 @@ const commands = [
       {
         name: "bet",
         description: "Amount you want to bet on",
-        type: ApplicationCommandOptionType.Integer,
-        required: true
+        type: ApplicationCommandOptionType.User,
+        "required": true
+      }
+    ]
+  },
+  {
+    name: "tictactoe",
+    description: "play tic tac toe with a friend for some bet",
+    options: [
+      {name: "bet",
+       description: "how much money you want to bet on",
+       type: ApplicationCommandOptionType.Integer,   
+       "required": true
       }
     ]
   }
@@ -51,7 +63,7 @@ const commands = [
   }
 ];
 
-const rest = new REST({ version: '10' }).setToken(token));
+const rest = new REST({ version: '10' }).setToken(token);
 
 (async () => {
   try {
@@ -100,6 +112,9 @@ client.on('interactionCreate', async interaction => {
   }
   if(interaction.commandName === "balance"){
     await money.balance(interaction);
+  }
+  if(interaction.commandName === "tictactoe"){
+    tictactoe.tictactoe(interaction);
   }
 }) 
 //buttons
