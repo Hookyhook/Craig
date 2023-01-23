@@ -194,7 +194,7 @@ exports.balance = async (interaction) => {
         return await interaction.reply({embeds: [embed]});
     }
     balance = balance?.rows[0].balance;
-    let level = getLevel(balance,lvl);
+    let level = getLevel(balance);
     //levels
     let bar = "";
     for (let index = 0; index < level[3]; index++) {
@@ -241,25 +241,28 @@ exports.balance = async (interaction) => {
     );
     return;
 }
-const lvl = [
-    {name: "brokie", max: 10},
-    {name: "lauterbach", max: 100},
-    {name: "Jeff Bagels", max: 1000},
-    {name: "Prince Marcus", max: 10000},
-    {name: "Angela Merkel", max: 100000},
-    {name: "Yi long ma", max: 1000000},
-]
-
-function getLevel(d, lvl){
+function getLevel(d){
+    const lvl = [
+            {name: "brokie", max: 100},
+            {name: "Karl Lauterbach", max: 1000},
+            {name: "Apple Monitor Stand", max: 1200},
+            {name: "Jeff Bagels", max: 10000},
+            {name: "Prince Marcus", max: 100000},
+            {name: "Taylor Swift", max: 500000},
+            {name: "Andrew Tata", max: 1000000},
+            {name: "Yi Long Ma", max: 5000000},
+            {name: "John Xina", max: 10000000},
+            {name: "Ina", max: 50000000}
+    ];
     const m = lvl.pop();
     for (let i = 0; i < lvl.length; i++) {
         for (const [key, value] of Object.entries(lvl[i])) {
             if(key == "max" && value > d){
               console.log(lvl[i].name);
               if(lvl[i+1]?.name !== undefined){
-                return [lvl[i].name, lvl[i+1].name, lvl[i].max-d, Math.floor(d/lvl[i].max * 10)];
+                return [lvl[i].name, lvl[i+1].name, lvl[i].max-d, Math.floor(d/lvl[i].max*10)];
             }else{
-                return [lvl[i].name, m.name, m.max-d, Math.floor(d/lvl[i].max * 10)];
+                return [lvl[i].name, m.name, lvl[i].max-d, Math.floor(d/lvl[i].max*10)];
             }
             }
         }

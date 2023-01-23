@@ -33,7 +33,7 @@ const commands = [
       {
         name: "bet",
         description: "Amount you want to bet on",
-        type: ApplicationCommandOptionType.User,
+        type: ApplicationCommandOptionType.Integer,
         "required": true
       }
     ]
@@ -115,6 +115,7 @@ client.on('interactionCreate', async interaction => {
   }
   if(interaction.commandName === "tictactoe"){
     tictactoe.tictactoe(interaction);
+    
   }
 }) 
 //buttons

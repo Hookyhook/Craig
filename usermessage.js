@@ -3,15 +3,8 @@ exports.messageUpdate = async (message) =>{
     updateMessageCount(message);
 }
 // updates Message Coubt
-const updateMessageCount = async(message) =>{
-    console.log("authorid:"+ message.author.id);
-    console.log("servername:" +message.guild.name);
-    console.log("serverid:" +message.guild.id);
-    
-    
-
+const updateMessageCount = async(message) =>{  
     userExist = await db.query("SELECT userid,serverid FROM user WHERE userid = ? AND serverid = ?",[message.author.id, message.guild.id]);
-    console.log(userExist);
     if(userExist.err){return}
     if(userExist.rows.length === 0){
         userExist == false;
@@ -20,7 +13,6 @@ const updateMessageCount = async(message) =>{
     }
     else{
         var res = await db.query("UPDATE user SET messageCount = messageCount + 1 WHERE userid = ? AND serverid = ?",[message.author.id, message.guild.id]);
-        console.log(res);
     }
     
 }
