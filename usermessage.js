@@ -31,7 +31,7 @@ exports.giveStats = async (interaction) => {
         interaction.reply("this user hasnt sent anything");
         return;
     }
-    console.log(interaction.options.get("user").value.username);
+
     interaction.reply({
         "embeds": [
             {

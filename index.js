@@ -1,4 +1,5 @@
-const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray } = require('discord.js');
+const token = "bruh no";
+const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray,ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
 const meme = require("./meme.js")
 const pi = require("./pi.js")
 const usermessage = require("./usermessage.js");
@@ -23,10 +24,34 @@ const commands = [
   {
     name: "work",
     description: "work! This gives you money! You can do it once an hour"
+  },
+  {
+    name:"coinflip",
+    description: "You can bet on head or tails. If you win you get double the bet, if not you lose all of it",
+    options: [
+      {
+        name: "bet",
+        description: "Amount you want to bet on",
+        type: ApplicationCommandOptionType.Integer,
+        required: true
+      }
+    ]
+  }
+  ,{
+    name: "balance",
+    description:"your amount of money!",
+    options: [
+      {
+        "name": "user",
+        "description": "from which user you want the balance is",
+        "type": ApplicationCommandOptionType.User,
+        "required": true,
+      }
+    ]
   }
 ];
 
-const rest = new REST({ version: '10' }).setToken("asdadada");
+const rest = new REST({ version: '10' }).setToken(token));
 
 (async () => {
   try {
@@ -70,8 +95,13 @@ client.on('interactionCreate', async interaction => {
   if(interaction.commandName === "work"){
     await money.work(interaction);
   }
-  
-
-
+  if(interaction.commandName === "coinflip"){
+    await money.coinflip(interaction);
+  }
+  if(interaction.commandName === "balance"){
+    await money.balance(interaction);
+  }
 }) 
-client.login("asdad");
+//buttons
+
+client.login(token);
