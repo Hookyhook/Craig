@@ -5,13 +5,13 @@ exports.tictactoe = async (interaction) => {
     let player2;
     let activePlayer = player1;
     let gameStarted = false;
-    let balance1 = await db.query("SELECT balance FROM money WHERE userid = ?",[player1.id]);
+    let balance1 = await db.query("SELECT balance FROM money WHERE userid = ?", [player1.id]);
     balance1 = balance1.rows[0].balance;
     // check money
     let errorEmbed = new EmbedBuilder().setTitle("ERROR");
-    if(balance1<= interaction.options.get("bet").value){
+    if (balance1 <= interaction.options.get("bet").value) {
         errorEmbed.setDescription(player1.username + "`s Balance is to low").setColor(15548997);
-        interaction.reply({embeds: [errorEmbed]});
+        interaction.reply({ embeds: [errorEmbed] });
         return;
     }
     let startEmbed = new EmbedBuilder()
@@ -42,11 +42,11 @@ exports.tictactoe = async (interaction) => {
         //turn game on and start board
         if (!gameStarted) {
             player2 = i.user;
-            let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?",[player2.id]);
+            let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
             balance2 = balance2.rows[0].balance;
-            if(balance2<= interaction.options.get("bet").value){
+            if (balance2 <= interaction.options.get("bet").value) {
                 errorEmbed.setDescription(player2.username + "`s Balance is to low").setColor(15548997);
-                interaction.editReply({embeds: [errorEmbed],components:[]});
+                interaction.editReply({ embeds: [errorEmbed], components: [] });
                 return;
             }
             let playEmbed = new EmbedBuilder()
@@ -108,12 +108,16 @@ exports.tictactoe = async (interaction) => {
                     if (gameBoard[i][0] != "none") {
                         if (gameBoard[i][0] == 1) {
                             interaction.editReply(player1.username + " wins ! COLUMN");
-                            await win(player1, player2, 1, interaction, gameBoard,balance1,balance2);
+                            let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                            balance2 = balance2.rows[0].balance;
+                            await win(player1, player2, 1, interaction, gameBoard, balance1, balance2);
                             return
                         }
                         else {
                             interaction.editReply(player1.username + " wins ! COLUMN");
-                            await win(player1, player2, 2, interaction, gameBoard,balance1,balance2);
+                            let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                            balance2 = balance2.rows[0].balance;
+                            await win(player1, player2, 2, interaction, gameBoard, balance1, balance2);
                             return
                         }
                     }
@@ -126,12 +130,16 @@ exports.tictactoe = async (interaction) => {
                     if (gameBoard[0][i] != "none") {
                         if (gameBoard[0][i] == 1) {
                             interaction.editReply(player1.username + " wins ! COLUMN");
-                            await win(player1, player2, 1, interaction, gameBoard,balance1,balance2);
+                            let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                            balance2 = balance2.rows[0].balance;
+                            await win(player1, player2, 1, interaction, gameBoard, balance1, balance2);
                             return
                         }
                         else {
                             interaction.editReply(player1.username + " wins ! COLUMN");
-                            await win(player1, player2, 2, interaction, gameBoard,balance1,balance2);
+                            let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                            balance2 = balance2.rows[0].balance;
+                            await win(player1, player2, 2, interaction, gameBoard, balance1, balance2);
                             return
                         }
                     }
@@ -142,12 +150,16 @@ exports.tictactoe = async (interaction) => {
                 if (gameBoard[0][0] !== "none") {
                     if (gameBoard[0][0] == 1) {
                         interaction.editReply(player1.username + " wins ! Diagonal");
-                        await win(player1, player2, 1, interaction, gameBoard,balance1,balance2);
+                        let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                        balance2 = balance2.rows[0].balance;
+                        await win(player1, player2, 1, interaction, gameBoard, balance1, balance2);
                         return;
                     }
                     else {
                         interaction.editReply(player2.username + " wins ! Diagonal");
-                        await win(player1, player2, 2, interaction, gameBoard,balance1,balance2);
+                        let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                        balance2 = balance2.rows[0].balance;
+                        await win(player1, player2, 2, interaction, gameBoard, balance1, balance2);
                         return
                     }
                 }
@@ -159,19 +171,25 @@ exports.tictactoe = async (interaction) => {
                 if (gameBoard[0][2] !== "none") {
                     if (gameBoard[1][1] == 1) {
                         interaction.editReply(player1.username + " wins ! Anti Diagonal");
-                        await win(player1, player2, 1, interaction, gameBoard,balance1,balance2);
+                        let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                        balance2 = balance2.rows[0].balance;
+                        await win(player1, player2, 1, interaction, gameBoard, balance1, balance2);
                         return;
                     }
                     else {
                         interaction.editReply(player2.username + " wins ! Diagonal");
-                        await win(player1, player2, 2, interaction, gameBoard,balance1,balance2);
+                        let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                        balance2 = balance2.rows[0].balance;
+                        await win(player1, player2, 2, interaction, gameBoard, balance1, balance2);
                         return
                     }
                 }
             }
             //all boxes pos
             if (!gameBoard.some(row => row.includes("none"))) {
-                await win(player1, player2, 0, interaction, gameBoard,balance1,balance2);
+                let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+                balance2 = balance2.rows[0].balance;
+                await win(player1, player2, 0, interaction, gameBoard, balance1, balance2);
                 collector.stop();
                 return
             }
@@ -207,15 +225,15 @@ exports.tictactoe = async (interaction) => {
     })
     collector.on('end', collected => console.log(`Collected ${collected.size} items`));
 }
-async function win(player1, player2, status, interaction, gameBoard,balance1,balance2) {
+async function win(player1, player2, status, interaction, gameBoard, balance1, balance2) {
     resultEmbed = new EmbedBuilder();
-    if(status == "0"){
+    if (status == "0") {
         resultEmbed.setTitle("DRAW");
         resultEmbed.setColor(3447003)
-    }else if(status == 1){
+    } else if (status == 1) {
         resultEmbed.setTitle(`**${player1.username}** WON!`);
     }
-    else{
+    else {
         resultEmbed.setTitle(`**${player2.username}** WON!`);
     }
     let gamePos = "";
@@ -234,22 +252,23 @@ async function win(player1, player2, status, interaction, gameBoard,balance1,bal
         gamePos += " \n ";
     }
     console.log(gamePos);
-    resultEmbed.addFields({name:"``"+player1.username+"``: :x:",inline:true,value:"\u200B"},{name:"``"+player2.username+"``: :green_circle:",inline:true,value:"\u200B"},{ name: "BOARD", value: gamePos});
+    resultEmbed.addFields({ name: "``" + player1.username + "``: :x:", inline: true, value: "\u200B" }, { name: "``" + player2.username + "``: :green_circle:", inline: true, value: "\u200B" }, { name: "BOARD", value: gamePos });
     // balance set and show in input
-    if(status == "0"){
-        resultEmbed.addFields({name:"\u200B",inline:false,value:"\u200B"},{name:"``Balance "+player1.username+":``"+balance1,inline:true,value:"\u200B"},{ name:"``Balance "+player2.username+":``"+balance2,inline:true,value:"\u200B"});
-    }else if(status == 1){
-        var res = await db.query("UPDATE money SET balance = ?  WHERE userid = ?", [balance1+interaction.options.get("bet").value,player1.id]);
-        var res1 = await db.query("UPDATE money SET balance = ?  WHERE userid = ?", [balance2-interaction.options.get("bet").value,player2.id]);
-        resultEmbed.addFields({name:"``Balance "+player1.username+":``"+(balance1+interaction.options.get("bet").value),inline:true,value:"\u200B"},{ name:"``Balance "+player2.username+":``"+(balance2-interaction.options.get("bet").value),inline:true,value:"\u200B"});
+    console.log(interaction.options.get("bet").value);
+    if (status == "0") {
+        resultEmbed.addFields({ name: "\u200B", inline: false, value: "\u200B" }, { name: "``Balance " + player1.username + ":``" + balance1, inline: true, value: "\u200B" }, { name: "``Balance " + player2.username + ":``" + balance2, inline: true, value: "\u200B" });
+    } else if (status == 1) {
+        var res = await db.query("UPDATE money SET balance = ?  WHERE userid = ?", [balance1 + interaction.options.get("bet").value, player1.id]);
+        var res1 = await db.query("UPDATE money SET balance = ?  WHERE userid = ?", [balance2 - interaction.options.get("bet").value, player2.id]);
+        resultEmbed.addFields({ name: "``Balance " + player1.username + ":``" + (balance1 + interaction.options.get("bet").value), inline: true, value: "\u200B" }, { name: "``Balance " + player2.username + ":``" + (balance2 - interaction.options.get("bet").value), inline: true, value: "\u200B" });
     }
-    else{
-        var res = await db.query("UPDATE money SET balance = ?  WHERE userid = ?", [balance1-interaction.options.get("bet").value,player1.id]);
-        var res1 = await db.query("UPDATE money SET balance = ?  WHERE userid = ?", [balance2+interaction.options.get("bet").value,player2.id]);
-        resultEmbed.addFields({name:"``Balance "+player1.username+":``"+(balance1-interaction.options.get("bet").value),inline:true,value:"\u200B"},{ name:"``Balance "+player2.username+":``"+`${balance2+interaction.options.get("bet").value}`,inline:true,value:"\u200B"});
+    else {
+        var res = await db.query("UPDATE money SET balance = ?  WHERE userid = ?", [balance1 - interaction.options.get("bet").value, player1.id]);
+        var res1 = await db.query("UPDATE money SET balance = ?  WHERE userid = ?", [balance2 + interaction.options.get("bet").value, player2.id]);
+        resultEmbed.addFields({ name: "``Balance " + player1.username + ":``" + (balance1 - interaction.options.get("bet").value), inline: true, value: "\u200B" }, { name: "``Balance " + player2.username + ":``" + (balance2 + interaction.options.get("bet").value), inline: true, value: "\u200B" });
 
     }
     interaction.editReply({ embeds: [resultEmbed], components: [] });
-    
+
 
 }
