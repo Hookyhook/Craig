@@ -1,21 +1,29 @@
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, } = require('discord.js');
 const db = require('./db');
+const { balance } = require('./money');
 exports.tictactoe = async (interaction) => {
     let player1 = interaction.user;
+    let gameFinisched = false
     let player2;
     let activePlayer = player1;
     let gameStarted = false;
+    let errorEmbed = new EmbedBuilder().setTitle("ERROR").setColor(15548997);
     let balance1 = await db.query("SELECT balance FROM money WHERE userid = ?", [player1.id]);
+    console.log(balance1)
+    if(balance1.rows.length === 0){
+        errorEmbed.setDescription("You have never worked, please join the system by running /work");
+        interaction.reply({embeds:[errorEmbed]});
+        return
+    }
     balance1 = balance1.rows[0].balance;
-    // check money
-    let errorEmbed = new EmbedBuilder().setTitle("ERROR");
+    // check mone
     if (balance1 <= interaction.options.get("bet").value) {
-        errorEmbed.setDescription(player1.username + "`s Balance is to low").setColor(15548997);
+        errorEmbed.setDescription(player1.username + "`s Balance is to low");
         interaction.reply({ embeds: [errorEmbed] });
         return;
     }
     let startEmbed = new EmbedBuilder()
-        .setColor(15105570)
+        .setColor(15548997)
         .setTitle("Tic-Tac-Toe")
         .setDescription("from " + interaction.user.username)
         .setFields({ name: "Bet Amount", value: interaction.options.get("bet").value + "$" });
@@ -28,13 +36,33 @@ exports.tictactoe = async (interaction) => {
     ["none", "none", "none"]
     ];
     const collector = interaction.channel.createMessageComponentCollector();
+    // check interactivity
+    let startTime = Date.now();
+    function checkTime() {
+        if(gameFinisched){
+            return;
+        }
+        if (Date.now() - startTime >= 10000) {
+          startTime = Date.now();
+          let timeOutEmbed = new EmbedBuilder().setTitle("Closed").setDescription("This game was closed do to inactivity");
+          interaction.editReply({embeds: [timeOutEmbed], components:[]});
+          return;
+
+        }
+        else{
+            setTimeout(checkTime, 1000);
+        }
+      }
+      checkTime();
+
     collector.on("collect", async i => {
+        startTime = Date.now();
         if (i.message.interaction.id !== interaction.id) {
             return
         }
         if (i.user.id === interaction.user.id && !gameStarted) {
             //cant join your own game
-            let sameUserEmbed = new EmbedBuilder().setTitle("ERROR").setDescription("you cant join you own game").setColor(15548997);
+            errorEmbed = new EmbedBuilder().setTitle("ERROR").setDescription("you cant join you own game").setColor(3447003);
             interaction.editReply({ embeds: [sameUserEmbed], components: [] });
             collector.stop();
             return;
@@ -43,7 +71,14 @@ exports.tictactoe = async (interaction) => {
         if (!gameStarted) {
             player2 = i.user;
             let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
+            console.log(balance2);
+            if(balance2.rows.length === 0){
+                errorEmbed.setDescription(i.user.username + " has not worked! Work once to acces these games").setColor(15548997);
+                interaction.editReply({embeds: [errorEmbed],components: []});
+                return
+            }
             balance2 = balance2.rows[0].balance;
+            
             if (balance2 <= interaction.options.get("bet").value) {
                 errorEmbed.setDescription(player2.username + "`s Balance is to low").setColor(15548997);
                 interaction.editReply({ embeds: [errorEmbed], components: [] });
@@ -111,6 +146,7 @@ exports.tictactoe = async (interaction) => {
                             let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                             balance2 = balance2.rows[0].balance;
                             await win(player1, player2, 1, interaction, gameBoard, balance1, balance2);
+                            gameFinisched = true;
                             return
                         }
                         else {
@@ -118,6 +154,7 @@ exports.tictactoe = async (interaction) => {
                             let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                             balance2 = balance2.rows[0].balance;
                             await win(player1, player2, 2, interaction, gameBoard, balance1, balance2);
+                            gameFinisched = true;
                             return
                         }
                     }
@@ -133,6 +170,7 @@ exports.tictactoe = async (interaction) => {
                             let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                             balance2 = balance2.rows[0].balance;
                             await win(player1, player2, 1, interaction, gameBoard, balance1, balance2);
+                            gameFinisched = true;
                             return
                         }
                         else {
@@ -140,6 +178,7 @@ exports.tictactoe = async (interaction) => {
                             let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                             balance2 = balance2.rows[0].balance;
                             await win(player1, player2, 2, interaction, gameBoard, balance1, balance2);
+                            gameFinisched = true;
                             return
                         }
                     }
@@ -153,6 +192,7 @@ exports.tictactoe = async (interaction) => {
                         let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                         balance2 = balance2.rows[0].balance;
                         await win(player1, player2, 1, interaction, gameBoard, balance1, balance2);
+                        gameFinisched = true;
                         return;
                     }
                     else {
@@ -160,6 +200,7 @@ exports.tictactoe = async (interaction) => {
                         let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                         balance2 = balance2.rows[0].balance;
                         await win(player1, player2, 2, interaction, gameBoard, balance1, balance2);
+                        gameFinisched = true;
                         return
                     }
                 }
@@ -174,6 +215,7 @@ exports.tictactoe = async (interaction) => {
                         let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                         balance2 = balance2.rows[0].balance;
                         await win(player1, player2, 1, interaction, gameBoard, balance1, balance2);
+                        gameFinisched = true;
                         return;
                     }
                     else {
@@ -181,6 +223,7 @@ exports.tictactoe = async (interaction) => {
                         let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                         balance2 = balance2.rows[0].balance;
                         await win(player1, player2, 2, interaction, gameBoard, balance1, balance2);
+                        gameFinisched = true;
                         return
                     }
                 }
@@ -190,6 +233,7 @@ exports.tictactoe = async (interaction) => {
                 let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
                 balance2 = balance2.rows[0].balance;
                 await win(player1, player2, 0, interaction, gameBoard, balance1, balance2);
+                gameFinisched = true;
                 collector.stop();
                 return
             }
