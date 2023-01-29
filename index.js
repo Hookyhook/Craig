@@ -1,9 +1,10 @@
-const token = "no";
+const token = "not for you mate";
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray,ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
 const money = require("./money.js");
 const tictactoe = require("./tictactoe.js");
+const rps = require("./rock-paper-scissors.js");
 const commands = [
   {
     name: "meme",
@@ -49,6 +50,17 @@ const commands = [
     ]
   }
   ,{
+    name: "rps",
+    description: "play rockPaperScissors",
+    options: [
+      {name: "bet",
+       description: "how much money you want to bet on",
+       type: ApplicationCommandOptionType.Integer,   
+       "required": true
+      }
+    ]
+  },
+  {
     name: "balance",
     description:"your amount of money!",
     options: [
@@ -76,7 +88,8 @@ const rest = new REST({ version: '10' }).setToken(token);
   }
 })();
 const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent] });
+const { rockPaperScissors } = require('./rock-paper-scissors.js');
+const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent]});
 
 
 //messages
@@ -114,7 +127,9 @@ client.on('interactionCreate', async interaction => {
   }
   if(interaction.commandName === "tictactoe"){
     tictactoe.tictactoe(interaction);
-    
+  }
+  if(interaction.commandName === "rps"){
+    rps.rps(interaction);
   }
 }) 
 //buttons

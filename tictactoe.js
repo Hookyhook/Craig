@@ -1,3 +1,6 @@
+// TODO:
+    //optimization and refractoring
+
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, } = require('discord.js');
 const db = require('./db');
 const { balance } = require('./money');
@@ -42,7 +45,7 @@ exports.tictactoe = async (interaction) => {
         if(gameFinisched){
             return;
         }
-        if (Date.now() - startTime >= 10000) {
+        if (Date.now() - startTime >= 60000) {
           startTime = Date.now();
           let timeOutEmbed = new EmbedBuilder().setTitle("Closed").setDescription("This game was closed do to inactivity");
           interaction.editReply({embeds: [timeOutEmbed], components:[]});
