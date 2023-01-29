@@ -31,7 +31,7 @@ Craig is a discord bot for you and your friends. You can play some games and hav
 
 
 *This bot is not production ready, and it can come to crashes, but you can invite it to your bot here:*
-https://discord.com/api/oauth2/authorize?client_id=1049045621769764985&permissions=534723947600&scope=bot 
+https://discord.com/api/oauth2/authorize?client_id=1049045621769764985&permissions=8&scope=bot
 
 if you should find any bugs, please report them here:
 https://discord.gg/hUgDWzJpkK
