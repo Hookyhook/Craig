@@ -25,9 +25,9 @@ Craig is a discord bot for you and your friends. You can play some games and hav
 - Cross server compatability
 
 ## Tech
-- node Js ```My Favorite option for discord bots```
-- discord js ```Discord api for the discord message```
-- maria db ```Database to Store user data for cross server compatability ```
+- **node Js** ```My Favorite option for discord bots```
+- **discord js** ```Discord api for the discord message```
+- **maria db** ```Database to Store user data for cross server compatability ```
 
 
 *This bot is not production ready, and it can come to crashes, but you can invite it to your bot here:*
