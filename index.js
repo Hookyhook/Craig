@@ -1,4 +1,4 @@
-const token = "not for you mate";
+const token = "no";
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray,ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
