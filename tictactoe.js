@@ -26,7 +26,7 @@ exports.tictactoe = async (interaction) => {
         return;
     }
     let startEmbed = new EmbedBuilder()
-        .setColor(15548997)
+        .setColor(3447003)
         .setTitle("Tic-Tac-Toe")
         .setDescription("from " + interaction.user.username)
         .setFields({ name: "Bet Amount", value: interaction.options.get("bet").value + "$" });
@@ -65,8 +65,8 @@ exports.tictactoe = async (interaction) => {
         }
         if (i.user.id === interaction.user.id && !gameStarted) {
             //cant join your own game
-            errorEmbed = new EmbedBuilder().setTitle("ERROR").setDescription("you cant join you own game").setColor(3447003);
-            interaction.editReply({ embeds: [sameUserEmbed], components: [] });
+            errorEmbed = new EmbedBuilder().setTitle("ERROR").setDescription("you cant join you own game");
+            interaction.editReply({ embeds: [errorEmbed], components: [] });
             collector.stop();
             return;
         }
@@ -83,7 +83,7 @@ exports.tictactoe = async (interaction) => {
             balance2 = balance2.rows[0].balance;
             
             if (balance2 <= interaction.options.get("bet").value) {
-                errorEmbed.setDescription(player2.username + "`s Balance is to low").setColor(15548997);
+                errorEmbed.setDescription(player2.username + "`s Balance is to low");
                 interaction.editReply({ embeds: [errorEmbed], components: [] });
                 return;
             }

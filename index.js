@@ -1,10 +1,11 @@
-const token = "no";
+const token = "MTA0OTA0NTYyMTc2OTc2NDk4NQ.GUGzJ5.Yt5dbiEcPRyzKNke_aH_Ro0yShS1yce5Si_eog";
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray,ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
 const money = require("./money.js");
 const tictactoe = require("./tictactoe.js");
 const rps = require("./rock-paper-scissors.js");
+const help = require("./help.js");
 const commands = [
   {
     name: "meme",
@@ -71,6 +72,10 @@ const commands = [
         "required": true,
       }
     ]
+  },
+  {
+    name:"info",
+    description:"Some infos hahahahhahahahahahhahahahahahahhaha"
   }
 ];
 
@@ -89,6 +94,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 })();
 const { Client, GatewayIntentBits } = require('discord.js');
 const { rockPaperScissors } = require('./rock-paper-scissors.js');
+const { info } = require('./help.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent]});
 
 
@@ -129,7 +135,10 @@ client.on('interactionCreate', async interaction => {
     tictactoe.tictactoe(interaction);
   }
   if(interaction.commandName === "rps"){
-    rps.rps(interaction);
+    await rps.rps(interaction);
+  }
+  if(interaction.commandName === "info"){
+    help.info(interaction);
   }
 }) 
 //buttons
