@@ -74,7 +74,7 @@ exports.tictactoe = async (interaction) => {
         if (!gameStarted) {
             player2 = i.user;
             let balance2 = await db.query("SELECT balance FROM money WHERE userid = ?", [player2.id]);
-            console.log(balance2);
+           
             if(balance2.rows.length === 0){
                 errorEmbed.setDescription(i.user.username + " has not worked! Work once to acces these games").setColor(15548997);
                 interaction.editReply({embeds: [errorEmbed],components: []});
@@ -107,15 +107,16 @@ exports.tictactoe = async (interaction) => {
             let row2 = new ActionRowBuilder();
             let row3 = new ActionRowBuilder();
             for (let i = 0; i < 3; i++) {
-                row1.addComponents(new ButtonBuilder().setLabel(" ").setCustomId("row+0+" + i).setStyle(ButtonStyle.Secondary));
+                row1.addComponents(new ButtonBuilder().setLabel(".").setCustomId("row+0+" + i).setStyle(ButtonStyle.Secondary));
             }
             for (let i = 0; i < 3; i++) {
-                row2.addComponents(new ButtonBuilder().setLabel(" ").setCustomId("row+1+" + i).setStyle(ButtonStyle.Secondary));
+                row2.addComponents(new ButtonBuilder().setLabel(".").setCustomId("row+1+" + i).setStyle(ButtonStyle.Secondary));
             }
             for (let i = 0; i < 3; i++) {
-                row3.addComponents(new ButtonBuilder().setLabel(" ").setCustomId("row+2+" + i).setStyle(ButtonStyle.Secondary));
+                row3.addComponents(new ButtonBuilder().setLabel(".").setCustomId("row+2+" + i).setStyle(ButtonStyle.Secondary));
             }
-            interaction.editReply({ embeds: [playEmbed], components: [row1, row2, row3] });
+            console.log(row3);
+            interaction.editReply({embeds: [playEmbed], components: [row1, row2, row3] });
             gameStarted = true;
         }
         if (i.customId.includes("row")) {
@@ -257,7 +258,7 @@ exports.tictactoe = async (interaction) => {
                 let row = new ActionRowBuilder();
                 for (let j = 0; j < gameBoard[i].length; j++) {
                     if (gameBoard[i][j] == "none") {
-                        row.addComponents(new ButtonBuilder().setLabel(" ").setCustomId("row+" + i + "+" + j).setStyle(ButtonStyle.Secondary));
+                        row.addComponents(new ButtonBuilder().setLabel(".").setCustomId("row+" + i + "+" + j).setStyle(ButtonStyle.Secondary));
                     } else if (gameBoard[i][j] == "1") {
                         row.addComponents(new ButtonBuilder().setLabel("X").setCustomId("row+" + i + "+" + j).setStyle(ButtonStyle.Danger).setDisabled(true));
                     }

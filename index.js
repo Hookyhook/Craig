@@ -1,11 +1,13 @@
-const token = "MTA0OTA0NTYyMTc2OTc2NDk4NQ.GUGzJ5.Yt5dbiEcPRyzKNke_aH_Ro0yShS1yce5Si_eog";
-const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray,ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require('discord.js');
+const token = "no";
+const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray,ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
 const money = require("./money.js");
 const tictactoe = require("./tictactoe.js");
 const rps = require("./rock-paper-scissors.js");
 const help = require("./help.js");
+const rob = require("./rob.js");
+const db = require("./db.js");
 const commands = [
   {
     name: "meme",
@@ -50,7 +52,7 @@ const commands = [
       }
     ]
   }
-  ,{
+  ,/*{
     name: "rps",
     description: "play rockPaperScissors",
     options: [
@@ -60,7 +62,7 @@ const commands = [
        "required": true
       }
     ]
-  },
+  },*/
   {
     name: "balance",
     description:"your amount of money!",
@@ -76,6 +78,17 @@ const commands = [
   {
     name:"info",
     description:"Some infos hahahahhahahahahahhahahahahahahhaha"
+  },
+  {
+    name: "rob",
+    description: "rob somebody, but watch out it could go wrong",
+    options:[
+      {name: "user",
+      description: "who you want to rob",
+      type: ApplicationCommandOptionType.User,
+      required: true
+      }
+    ]
   }
 ];
 
@@ -93,23 +106,12 @@ const rest = new REST({ version: '10' }).setToken(token);
   }
 })();
 const { Client, GatewayIntentBits } = require('discord.js');
-const { rockPaperScissors } = require('./rock-paper-scissors.js');
-const { info } = require('./help.js');
 const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent]});
 
 
 //messages
-client.on("messageCreate", (message) =>{
-  if (message.author.bot){return}
+client.on("messageCreate", async (message) =>{
   usermessage.messageUpdate(message);
-  if(message.content.startsWith("$")){
-    if(message.content.startsWith("$pi")){
-     pi.pi(message);     
-    }
-  }
-  //update message count
-  
-
 })
 
 client.on('interactionCreate', async interaction => {
@@ -121,15 +123,23 @@ client.on('interactionCreate', async interaction => {
   if(interaction.commandName === "stats"){
     await usermessage.giveStats(interaction);
   }
-  //work
+  if(interaction.commandName === "info"){
+    help.info(interaction);
+  }
+  if(interaction.commandName === "balance"){
+    await money.balance(interaction);
+  }
+  //everything with money comes after here so we check if in jail
+  if(await money.injail(interaction.user) == true){
+    console.log("in jail")
+    interaction.reply({embeds: [money.injailEmbed]});
+    return;
+  }
   if(interaction.commandName === "work"){
     await money.work(interaction);
   }
   if(interaction.commandName === "coinflip"){
     await money.coinflip(interaction);
-  }
-  if(interaction.commandName === "balance"){
-    await money.balance(interaction);
   }
   if(interaction.commandName === "tictactoe"){
     tictactoe.tictactoe(interaction);
@@ -137,8 +147,9 @@ client.on('interactionCreate', async interaction => {
   if(interaction.commandName === "rps"){
     await rps.rps(interaction);
   }
-  if(interaction.commandName === "info"){
-    help.info(interaction);
+  
+  if(interaction.commandName === "rob"){
+    rob.rob(interaction);
   }
 }) 
 //buttons

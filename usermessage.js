@@ -8,17 +8,16 @@ const updateMessageCount = async(message) =>{
     if(userExist.err){return}
     if(userExist.rows.length === 0){
         userExist == false;
-        var res = await db.query("INSERT INTO user (userid, messageCount, serverid) VALUES ( ? , ? , ?)",[message.author.id,1,message.guild.id]);
-        
+        await db.query("INSERT INTO user (userid, messageCount, serverid) VALUES ( ? , ? , ?)",[message.author.id,1,message.guild.id]);  
     }
     else{
-        var res = await db.query("UPDATE user SET messageCount = messageCount + 1 WHERE userid = ? AND serverid = ?",[message.author.id, message.guild.id]);
+        await db.query("UPDATE user SET messageCount = messageCount + 1 WHERE userid = ? AND serverid = ?",[message.author.id, message.guild.id]);
     }
     
 }
 
 exports.giveStats = async (interaction) => {
-    var res = await db.query("SELECT messageCount FROM user WHERE userid = ? AND serverid = ?",[interaction.options.get("user").value,interaction.guild.id]);
+    let res = await db.query("SELECT messageCount FROM user WHERE userid = ? AND serverid = ?",[interaction.options.get("user").value,interaction.guild.id]);
     if(res.rows.length === 0){
         interaction.reply("this user hasnt sent anything");
         return;

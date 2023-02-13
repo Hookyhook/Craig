@@ -13,7 +13,8 @@ const {
     ButtonStyle,
     Events,
     Collector,
-    Collection
+    Collection,
+    Colors
 } = require("discord.js");
 const db = require("./db.js");
 
@@ -269,3 +270,20 @@ function getLevel(d){
     }
     return [m.name, "There is no next Level", 0, 0];
     }
+
+    
+//check if in jail
+exports.injail = async (user) =>{
+    let time = await db.query("SELECT injailtill FROM money WHERE userid = ?", [user.id]);
+    time = time.rows[0].injailtill;
+    console.log(time);
+    console.log(Date.now())
+    console.log(time < Date.now())
+    if(time > Date.now()){
+        return true;
+    }
+    else{
+        return false;
+    }
+}  
+exports.injailEmbed = new EmbedBuilder().setTitle("YOUR in JAIL").setColor(Colors.Red);
