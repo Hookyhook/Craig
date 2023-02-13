@@ -1,5 +1,5 @@
 const db = require("./db.js");
-exports.messageUpdate = async (message) =>{
+exports.messageUpdate = (message) =>{
     updateMessageCount(message);
 }
 // updates Message Coubt
