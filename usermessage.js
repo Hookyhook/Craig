@@ -4,10 +4,9 @@ exports.messageUpdate = (message) =>{
 }
 // updates Message Coubt
 const updateMessageCount = async(message) =>{  
-    userExist = await db.query("SELECT userid,serverid FROM user WHERE userid = ? AND serverid = ?",[message.author.id, message.guild.id]);
+    let userExist = await db.query("SELECT userid,serverid FROM user WHERE userid = ? AND serverid = ?",[message.author.id, message.guild.id]);
     if(userExist.err){return}
     if(userExist.rows.length === 0){
-        userExist == false;
         await db.query("INSERT INTO user (userid, messageCount, serverid) VALUES ( ? , ? , ?)",[message.author.id,1,message.guild.id]);  
     }
     else{
