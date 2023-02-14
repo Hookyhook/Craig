@@ -73,9 +73,8 @@ exports.jail = async (interaction) => {
         //he in jail
         //calc the time
         let h = Math.floor((injailtill - Date.now())/3600000);
-        let min = Math.floor(((injailtill - Date.now())%3600000)/3600000)
-        console.log(h);
-        console.log(min)
-        
+        let min = Math.floor(((injailtill - Date.now())%3600000)/60000)
+        let inJailEmbed = new EmbedBuilder().setTitle("IN JAIL").setDescription(`You still have ${h}h and ${min}min to go!`).setColor(Colors.Red);
+        interaction.reply({embeds: [inJailEmbed]});
     }
 }

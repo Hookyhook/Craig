@@ -1,4 +1,4 @@
-const token = "no";
+const token = "MTA0OTA0NTYyMTc2OTc2NDk4NQ.GLomNg.R8dbilN3KmKev1wLL3z9Hty32ar88TrCpZUc2w";
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
@@ -8,6 +8,7 @@ const rps = require("./rock-paper-scissors.js");
 const help = require("./help.js");
 const rob = require("./rob.js");
 const db = require("./db.js");
+const bank = require("./bank");
 const commands = [
   {
     name: "meme",
@@ -71,7 +72,7 @@ const commands = [
   },
   {
     name: "info",
-    description: "Some infos hahahahhahahahahahhahahahahahahhaha"
+    description: "Some infos"
   },
   {
     name: "rob",
@@ -85,7 +86,18 @@ const commands = [
       }
     ]
   }
-];
+  ,
+  {
+    name: "deposit",
+    description: "doposit into bank",
+  },
+  {name:"games",
+   description: "some infos to games"},
+   {name:"money",
+   description: "some infos to the money system"},
+   {name:"others",
+   description: "some infos to the others commands"},
+  ];
 
 const rest = new REST({ version: '10' }).setToken(token);
 
@@ -129,6 +141,23 @@ client.on('interactionCreate', async interaction => {
   }
   if (interaction.commandName === "jail") {
     await rob.jail(interaction);
+    return
+  }
+  if (interaction.commandName === "deposit") {
+    await bank.deposit(interaction);
+    return
+  }
+  //help
+  if (interaction.commandName === "games") {
+    await help.games(interaction);
+    return
+  }
+  if (interaction.commandName === "money") {
+    await help.money(interaction);
+    return
+  }
+  if (interaction.commandName === "others") {
+    await help.others(interaction);
     return
   }
   //everything with money comes after here so we check if in jail
