@@ -6,12 +6,6 @@ const money = require("./money.js");
 exports.rob = async (interaction) => {
     //err embeds
     let errEmbed = new EmbedBuilder().setColor(Colors.Red).setTitle("ERROR");
-    //check ig user is in jail
-    if(await money.injail(interaction.user) == true){
-        console.log("in jail")
-        interaction.reply({embeds: [money.injailEmbed]});
-        return;
-    }
     //get player
     const robber = {user:interaction.user};
     const victim = {user:interaction.options.get("user").user};
@@ -33,12 +27,11 @@ exports.rob = async (interaction) => {
     }
     victim.balance = dbres.rows[0].balance;// convert db output and write to robber item
     //calc money robed
-    let amount = Math.floor(victim.balance * (Math.random()/20+0.1)); // the robed ammount is 5% - 10% of victims balance
+    let amount = Math.floor(victim.balance * (Math.random()/20+0.1)); // the robed ammount is 10% - 30% of victims balance
     if(amount>robber.balance){
         amount = Math.floor(robber.balance + (((Math.random()-0.5)*0.4)*(robber.balance)));// determin balance if ammount is not bigger than robber balance
     }
     //detimine if catched by police
-    console.log(Math.random());
     if(Math.random() < 0.5){
         // embed to tell you failed
         const coughtEmbed = new EmbedBuilder().setTitle("COUGHT").setDescription("YOU WERE COUGHT, YOU WILL NOT BE ABLE TO DO MONEY RELATED THINGS FOR 5 HOURS").setColor(Colors.Red);

@@ -19,7 +19,7 @@ exports.tictactoe = async (interaction) => {
         return
     }
     balance1 = balance1.rows[0].balance;
-    // check mone
+    // check money
     if (balance1 <= interaction.options.get("bet").value) {
         errorEmbed.setDescription(player1.username + "`s Balance is to low");
         interaction.reply({ embeds: [errorEmbed] });

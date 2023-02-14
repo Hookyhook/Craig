@@ -24,7 +24,7 @@ exports.work = async (interaction) => {
         interaction.user.id,
     ]);
     if (inDb.rows.length === 0) {
-        var res = await db.query(
+        await db.query(
             "INSERT INTO money (userid, balance, lastworked) VALUES ( ? , ? , ?)",
             [interaction.user.id, 0, 0]
         );
@@ -36,14 +36,14 @@ exports.work = async (interaction) => {
     if (inDb.rows[0].lastworked < Date.now() - 3600000) {
         let Wage = Math.floor(Math.random() * 30 + 10);
 
-        var res = await db.query(
+        await db.query(
             "UPDATE money SET balance = balance + ?, lastworked = ?  WHERE userid = ?",
             [Wage, Date.now(), interaction.user.id]
         );
         interaction.reply("Worked! Your balance: " + (inDb.rows[0].balance + Wage));
     } else {
         interaction.reply(
-            `geez,take a break: you can work in ${Math.round(
+            `geez,take a break: you can work in ${Math.floor(
                 (inDb.rows[0].lastworked - Date.now() + 3600000) / 60000
             )} min and ${Math.floor(
                 ((inDb.rows[0].lastworked - Date.now() + 3600000) % 60000) / 1000
