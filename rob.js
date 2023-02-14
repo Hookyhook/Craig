@@ -56,3 +56,26 @@ exports.rob = async (interaction) => {
         
     }
 }
+exports.jail = async (interaction) => {
+    //get basic data
+    let user = interaction.user;
+    let injailtill = await db.query("SELECT injailtill FROM money WHERE userid = ?",[user.id])
+    injailtill = injailtill.rows[0].injailtill; // format dbquery to use value
+    console.log(injailtill);
+    
+    if(injailtill < Date.now()){
+        //he is not in jail
+        //send not in jail embed
+        let notInJailEmbed = new EmbedBuilder().setTitle("YOU ARE NOT IN JAIL").setDescription("grats").setColor(Colors.Green);
+        interaction.reply({embeds: [notInJailEmbed]});
+    }
+    else{
+        //he in jail
+        //calc the time
+        let h = Math.floor((injailtill - Date.now())/3600000);
+        let min = Math.floor(((injailtill - Date.now())%3600000)/3600000)
+        console.log(h);
+        console.log(min)
+        
+    }
+}

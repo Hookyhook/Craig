@@ -1,5 +1,5 @@
-const token = "no";
-const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray,ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention } = require('discord.js');
+const token = "MTA0OTA0NTYyMTc2OTc2NDk4NQ.Gc6bPW.5whZuJtI8gQG1Vdc7ZNsvOUYWnqiI5A7EjieE4";
+const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
 const money = require("./money.js");
@@ -11,10 +11,10 @@ const db = require("./db.js");
 const commands = [
   {
     name: "meme",
-    description:"????"
-  },{
+    description: "????"
+  }, {
     name: "stats",
-    description:"gives stats dor how many messages you have sent in this server",
+    description: "gives stats dor how many messages you have sent in this server",
     options: [
       {
         "name": "user",
@@ -30,7 +30,7 @@ const commands = [
     description: "work! This gives you money! You can do it once an hour"
   },
   {
-    name:"coinflip",
+    name: "coinflip",
     description: "You can bet on head or tails. If you win you get double the bet, if not you lose all of it",
     options: [
       {
@@ -45,27 +45,21 @@ const commands = [
     name: "tictactoe",
     description: "play tic tac toe with a friend for some bet",
     options: [
-      {name: "bet",
-       description: "how much money you want to bet on",
-       type: ApplicationCommandOptionType.Integer,   
-       "required": true
+      {
+        name: "bet",
+        description: "how much money you want to bet on",
+        type: ApplicationCommandOptionType.Integer,
+        "required": true
       }
     ]
-  }
-  ,/*{
-    name: "rps",
-    description: "play rockPaperScissors",
-    options: [
-      {name: "bet",
-       description: "how much money you want to bet on",
-       type: ApplicationCommandOptionType.Integer,   
-       "required": true
-      }
-    ]
-  },*/
+  },
+  {
+    name: "jail",
+    description: "Check if you are in Jail, and for how long!"
+  },
   {
     name: "balance",
-    description:"your amount of money!",
+    description: "your amount of money!",
     options: [
       {
         "name": "user",
@@ -76,17 +70,18 @@ const commands = [
     ]
   },
   {
-    name:"info",
-    description:"Some infos hahahahhahahahahahhahahahahahahhaha"
+    name: "info",
+    description: "Some infos hahahahhahahahahahhahahahahahahhaha"
   },
   {
     name: "rob",
     description: "rob somebody, but watch out it could go wrong",
-    options:[
-      {name: "user",
-      description: "who you want to rob",
-      type: ApplicationCommandOptionType.User,
-      required: true
+    options: [
+      {
+        name: "user",
+        description: "who you want to rob",
+        type: ApplicationCommandOptionType.User,
+        required: true
       }
     ]
   }
@@ -106,52 +101,60 @@ const rest = new REST({ version: '10' }).setToken(token);
   }
 })();
 const { Client, GatewayIntentBits } = require('discord.js');
-const client = new Client({ intents: [GatewayIntentBits.Guilds,GatewayIntentBits.GuildMessages,GatewayIntentBits.MessageContent]});
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
 
 
 //messages
-client.on("messageCreate", async (message) =>{
+client.on("messageCreate", async (message) => {
   usermessage.messageUpdate(message);
 })
 
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
+  if (!interaction.isChatInputCommand()) return;
 
-  if(interaction.commandName === "meme"){
-    await meme.meme(client,interaction);
+  if (interaction.commandName === "meme") {
+    await meme.meme(client, interaction);
+    return
   }
-  if(interaction.commandName === "stats"){
+  if (interaction.commandName === "stats") {
     await usermessage.giveStats(interaction);
   }
-  if(interaction.commandName === "info"){
-    help.info(interaction);
+  if (interaction.commandName === "info") {
+    await help.info(interaction);
+    return
   }
-  if(interaction.commandName === "balance"){
+  if (interaction.commandName === "balance") {
     await money.balance(interaction);
+    return
+  }
+  if (interaction.commandName === "jail") {
+    await rob.jail(interaction);
+    return
   }
   //everything with money comes after here so we check if in jail
-  if(await money.injail(interaction.user) == true){
+  if (await money.injail(interaction.user) == true) {
     console.log("in jail")
-    interaction.reply({embeds: [money.injailEmbed]});
+    interaction.reply({ embeds: [money.injailEmbed] });
     return;
   }
-  if(interaction.commandName === "work"){
+  if (interaction.commandName === "work") {
     await money.work(interaction);
   }
-  if(interaction.commandName === "coinflip"){
+  if (interaction.commandName === "coinflip") {
     await money.coinflip(interaction);
   }
-  if(interaction.commandName === "tictactoe"){
+  if (interaction.commandName === "tictactoe") {
     tictactoe.tictactoe(interaction);
   }
-  if(interaction.commandName === "rps"){
+  if (interaction.commandName === "rps") {
     await rps.rps(interaction);
   }
-  
-  if(interaction.commandName === "rob"){
+
+  if (interaction.commandName === "rob") {
     rob.rob(interaction);
   }
-}) 
+
+})
 //buttons
 
 client.login(token);

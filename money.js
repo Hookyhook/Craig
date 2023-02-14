@@ -276,9 +276,7 @@ function getLevel(d){
 exports.injail = async (user) =>{
     let time = await db.query("SELECT injailtill FROM money WHERE userid = ?", [user.id]);
     time = time.rows[0].injailtill;
-    console.log(time);
     console.log(Date.now())
-    console.log(time < Date.now())
     if(time > Date.now()){
         return true;
     }
