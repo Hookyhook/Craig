@@ -1,4 +1,4 @@
-const token = "MTA0OTA0NTYyMTc2OTc2NDk4NQ.GLomNg.R8dbilN3KmKev1wLL3z9Hty32ar88TrCpZUc2w";
+const token = "NO";
 const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
