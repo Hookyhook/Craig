@@ -1,5 +1,5 @@
-const token = "NO";
-const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention } = require('discord.js');
+const token = "no";
+const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention, ApplicationCommandOptionWithChoicesAndAutocompleteMixin } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
 const money = require("./money.js");
@@ -90,14 +90,40 @@ const commands = [
   {
     name: "deposit",
     description: "doposit into bank",
+    options: [
+      {
+        name: "amount",
+        description: "how much you want to deposit",
+        type: ApplicationCommandOptionType.Integer,
+        required: true
+      }
+    ]
   },
-  {name:"games",
-   description: "some infos to games"},
-   {name:"money",
-   description: "some infos to the money system"},
-   {name:"others",
-   description: "some infos to the others commands"},
-  ];
+  {
+    name: "withdraw",
+    description: "withdraw from bank",
+    options: [
+      {
+        name: "amount",
+        description: "how much you want to withdraw",
+        type: ApplicationCommandOptionType.Integer,
+        required: true
+      }
+    ]
+  },
+  {
+    name: "games",
+    description: "some infos to games"
+  },
+  {
+    name: "money",
+    description: "some infos to the money system"
+  },
+  {
+    name: "others",
+    description: "some infos to the others commands"
+  },
+];
 
 const rest = new REST({ version: '10' }).setToken(token);
 
@@ -143,10 +169,6 @@ client.on('interactionCreate', async interaction => {
     await rob.jail(interaction);
     return
   }
-  if (interaction.commandName === "deposit") {
-    await bank.deposit(interaction);
-    return
-  }
   //help
   if (interaction.commandName === "games") {
     await help.games(interaction);
@@ -178,9 +200,16 @@ client.on('interactionCreate', async interaction => {
   if (interaction.commandName === "rps") {
     await rps.rps(interaction);
   }
-
   if (interaction.commandName === "rob") {
     rob.rob(interaction);
+  }
+  if (interaction.commandName === "deposit") {
+    await bank.deposit(interaction);
+    return
+  }
+  if (interaction.commandName === "withdraw") {
+    await bank.withdraw(interaction);
+    return
   }
 
 })

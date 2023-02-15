@@ -3,7 +3,7 @@ exports.info = async(interaction) => {
     //biuld info embde
     let info = new EmbedBuilder().setTitle("CRAIG").setDescription("by Sycrw").setColor(Colors.Orange)
     .addFields({name: "What this?",value:"Craig is a bot that basicly lets you play some mini game for some money. This money you can earn through working and playing for it. You can learn more with the commands below"},
-    {name: "```/games```",value: "some info to the games",inline:true},{name: "```/money```",value: "some info to the money system",inline:true},{name: "/games",value: "some info to the games",inline:true});
+    {name: "```/games```",value: "some info to the games",inline:true},{name: "```/money```",value: "some info to the money system",inline:true},{name: "```/others```",value: "some other commands",inline:true});
     //biuld buttons
     let buttons = new  ActionRowBuilder()
     .addComponents(new ButtonBuilder().setURL("https://sycrw.ga").setLabel("SYCRW").setStyle(ButtonStyle.Link),

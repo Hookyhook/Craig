@@ -76,7 +76,7 @@ exports.coinflip = async (interaction) => {
             .setColor(15548997)
             .setTitle("ERROR")
             .addFields(
-                { name: "Problem", value: `Your balance is not that high` },
+                { name: "Problem", value: `You dont have enough money on hand!` },
                 {
                     name: "Bet",
                     value: `${interaction.options.get("bet").value}`,
@@ -183,8 +183,9 @@ exports.coinflip = async (interaction) => {
 }
 // balance
 exports.balance = async (interaction) => {
-    let balance = await db.query("SELECT balance FROM money WHERE userid = ?",[interaction.options.get("user").value]);
-    if(balance.rows.length === 0){
+    const res = await db.query("SELECT balance,bankbalance FROM money WHERE userid = ?",[interaction.options.get("user").value]);
+    console.log(res);
+    if(res.rows.length === 0){
         let embed = new EmbedBuilder()
             .setColor(15548997)
             .setTitle("ERROR")
@@ -194,8 +195,9 @@ exports.balance = async (interaction) => {
             });
         return await interaction.reply({embeds: [embed]});
     }
-    balance = balance?.rows[0].balance;
-    let level = getLevel(balance);
+    let balance = res.rows[0].balance;
+    let bank = res.rows[0].bankbalance;
+    let level = getLevel(balance + bank);
     //levels
     let bar = "";
     for (let index = 0; index < level[3]; index++) {
@@ -205,15 +207,13 @@ exports.balance = async (interaction) => {
         bar += " :black_large_square:";
         
     }
-    console.log(level[3]);
-    console.log(bar + "bar");
-
+    console.log( "**BANK** ```"+ bank + "```  ***ON HAND ```" + balance + "```");
     await interaction.reply(
         {
             "embeds": [
                 {
-                    "title": "__" + balance +"$__",
-                    "description": "is the balance of <@" +interaction.options.get("user").value + ">",
+                    "title": "__" + (balance + bank) +"$__",
+                    "description": "**BANK:** ``"+ bank + "``   **ON HAND:  ** ``" + balance + "``",
                     "fields": [
                         {
                             "name": "``level:``" + level[0],

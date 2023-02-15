@@ -21,7 +21,7 @@ exports.tictactoe = async (interaction) => {
     balance1 = balance1.rows[0].balance;
     // check money
     if (balance1 <= interaction.options.get("bet").value) {
-        errorEmbed.setDescription(player1.username + "`s Balance is to low");
+        errorEmbed.setDescription(player1.username + "doesnt have enough money on hand!");
         interaction.reply({ embeds: [errorEmbed] });
         return;
     }
@@ -83,7 +83,7 @@ exports.tictactoe = async (interaction) => {
             balance2 = balance2.rows[0].balance;
             
             if (balance2 <= interaction.options.get("bet").value) {
-                errorEmbed.setDescription(player2.username + "`s Balance is to low");
+                errorEmbed.setDescription(player2.username + "doesnt have enough money on hand!");
                 interaction.editReply({ embeds: [errorEmbed], components: [] });
                 return;
             }
