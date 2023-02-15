@@ -25,8 +25,8 @@ exports.work = async (interaction) => {
     ]);
     if (inDb.rows.length === 0) {
         await db.query(
-            "INSERT INTO money (userid, balance, lastworked) VALUES ( ? , ? , ?)",
-            [interaction.user.id, 0, 0]
+            "INSERT INTO money (userid, balance, lastworked,bankbalance, injailtill) VALUES ( ? , ? , ?, ?, ?)",
+            [interaction.user.id, 0, 0,0,0]
         );
         inDb = await db.query("SELECT * FROM money WHERE userid = ?", [
             interaction.user.id,
@@ -275,6 +275,11 @@ function getLevel(d){
 //check if in jail
 exports.injail = async (user) =>{
     let time = await db.query("SELECT injailtill FROM money WHERE userid = ?", [user.id]);
+    console.log(time)
+
+    if(time.rows.length === 0){
+        return;
+    }
     time = time.rows[0].injailtill;
     console.log(Date.now())
     if(time > Date.now()){
