@@ -57,7 +57,7 @@ exports.work = async (interaction) => {
 exports.coinflip = async (interaction) => {
     //check if 0
     
-    if (interaction.options.get("bet").value === 0) {
+    if (interaction.options.get("bet").value <= 0) {
         const embed = new EmbedBuilder()
             .setColor(15548997)
             .setTitle("ERROR")
@@ -71,7 +71,7 @@ exports.coinflip = async (interaction) => {
     let balance = await db.query("SELECT balance FROM money WHERE userid = ?", [
         interaction.user.id,
     ]);
-    if (balance.rows[0].balance < interaction.options.get("bet").value) {
+    if (balance.rows[0].balance <= interaction.options.get("bet").value) {
         const embed = new EmbedBuilder()
             .setColor(15548997)
             .setTitle("ERROR")
@@ -290,3 +290,29 @@ exports.injail = async (user) =>{
     }
 }  
 exports.injailEmbed = new EmbedBuilder().setTitle("YOUR in JAIL").setColor(Colors.Red);
+
+exports.leaderboard = async (interaction,rest) => {
+    interaction.deferReply("loading...");
+    let res = await db.query(`SELECT CAST(userid as VARCHAR(100)) AS userid, balance, bankbalance,
+        (balance + bankbalance) AS total FROM money 
+        ORDER BY total DESC LIMIT ?`,[10]);
+    res = res.rows;
+    let leaderboardArr = new Array();
+    for (let i = 0; i < res.length; i++) {
+        const e = res[i];
+        const restRes = await rest.get(Routes.user(e.userid));
+        leaderboardArr.push({username: restRes.username,balance: e.total});
+    }
+    console.log(leaderboardArr);
+    let valueMsg = "";
+    let valueMoney = "";
+    leaderboardArr.forEach((e,i) => {
+        valueMsg += "``"+(i+1)+"``"+": "+e.username+"\n";
+        valueMoney += "``"+e.balance + "$"+"``"+"\n";
+    });
+
+
+    let replyEmbed = new EmbedBuilder().setTitle("LEADERBOARD").setColor(Colors.Blue);
+        replyEmbed.addFields({name:"Top 10",value: valueMsg,inline:true},{name:"Total Balance",value:valueMoney,inline:true});
+    interaction.editReply({embeds:[replyEmbed]});  
+}

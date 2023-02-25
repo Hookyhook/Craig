@@ -10,7 +10,7 @@ exports.rob = async (interaction) => {
     const robber = {user:interaction.user};
     const victim = {user:interaction.options.get("user").user};
     //get money from db
-    let dbres = await db.query("SELECT balance FROM money WHERE userid = ?",[robber.user.id]);
+    let dbres = await db.query("SELECT balance,bankbalance FROM money WHERE userid = ?",[robber.user.id]);
     // check if robber to is even in money system
     if(dbres.rows.length === 0){
         //err message
@@ -18,6 +18,7 @@ exports.rob = async (interaction) => {
         return;
     }
     robber.balance = dbres.rows[0].balance;// convert db output and write to robber item
+    robber.bankbalance = dbres.rows[0].bankbalance
     dbres = await db.query("SELECT balance FROM money WHERE userid = ?",[victim.user.id]);//extract id
     // check if victim to is even in money system
     if(dbres.rows.length === 0){
@@ -29,7 +30,7 @@ exports.rob = async (interaction) => {
     //calc money robed
     let amount = Math.floor(victim.balance * (Math.random()/20+0.1)); // the robed ammount is 10% - 30% of victims balance
     if(amount>robber.balance){
-        amount = Math.floor(robber.balance + (((Math.random()-0.5)*0.4)*(robber.balance)));// determin balance if ammount is not bigger than robber balance
+        amount = Math.floor(robber.balance + (((Math.random()-0.5)*0.4)*(robber.bankbalance + robber.balance)));// determin balance if ammount is not bigger than robber balance
     }
     //detimine if catched by police
     if(Math.random() < 0.5){

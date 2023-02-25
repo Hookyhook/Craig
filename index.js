@@ -123,6 +123,10 @@ const commands = [
     name: "others",
     description: "some infos to the others commands"
   },
+  {
+    name: "leaderboard",
+    description: "leaderboard"
+  },
 ];
 
 const rest = new REST({ version: '10' }).setToken(token);
@@ -156,6 +160,7 @@ client.on('interactionCreate', async interaction => {
   }
   if (interaction.commandName === "stats") {
     await usermessage.giveStats(interaction);
+    return;
   }
   if (interaction.commandName === "info") {
     await help.info(interaction);
@@ -167,6 +172,10 @@ client.on('interactionCreate', async interaction => {
   }
   if (interaction.commandName === "jail") {
     await rob.jail(interaction);
+    return
+  }
+  if (interaction.commandName === "leaderboard") {
+    await money.leaderboard(interaction,rest);
     return
   }
   //help
