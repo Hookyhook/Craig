@@ -40,7 +40,7 @@ exports.work = async (interaction) => {
             "UPDATE money SET balance = balance + ?, lastworked = ?  WHERE userid = ?",
             [Wage, Date.now(), interaction.user.id]
         );
-        interaction.reply("Worked! Your balance: " + (inDb.rows[0].balance + Wage));
+        interaction.reply("Worked! You Got: " + (Wage));
     } else {
         interaction.reply(
             `geez,take a break: you can work in ${Math.floor(
@@ -305,14 +305,13 @@ exports.leaderboard = async (interaction,rest) => {
     }
     console.log(leaderboardArr);
     let valueMsg = "";
-    let valueMoney = "";
     leaderboardArr.forEach((e,i) => {
-        valueMsg += "``"+(i+1)+"``"+": "+e.username+"\n";
-        valueMoney += "``"+e.balance + "$"+"``"+"\n";
+        valueMsg += "``"+(e.balance)+"$"+"``\t" + e.username +"\n";
+       
     });
 
 
     let replyEmbed = new EmbedBuilder().setTitle("LEADERBOARD").setColor(Colors.Blue);
-        replyEmbed.addFields({name:"Top 10",value: valueMsg,inline:true},{name:"Total Balance",value:valueMoney,inline:true});
+        replyEmbed.addFields({name:"Total Balance",value: valueMsg,inline:true});
     interaction.editReply({embeds:[replyEmbed]});  
 }

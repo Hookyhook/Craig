@@ -62,7 +62,6 @@ exports.jail = async (interaction) => {
     let user = interaction.user;
     let injailtill = await db.query("SELECT injailtill FROM money WHERE userid = ?",[user.id])
     injailtill = injailtill.rows[0].injailtill; // format dbquery to use value
-    console.log(injailtill);
     
     if(injailtill < Date.now()){
         //he is not in jail

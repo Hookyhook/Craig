@@ -1,5 +1,5 @@
-const token = "no";
-const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention, ApplicationCommandOptionWithChoicesAndAutocompleteMixin } = require('discord.js');
+const token = "";
+const { REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, roleMention, ApplicationCommandOptionWithChoicesAndAutocompleteMixin, Options } = require('discord.js');
 const meme = require("./meme.js")
 const usermessage = require("./usermessage.js");
 const money = require("./money.js");
@@ -9,6 +9,7 @@ const help = require("./help.js");
 const rob = require("./rob.js");
 const db = require("./db.js");
 const bank = require("./bank");
+const shop = require("./shop");
 const commands = [
   {
     name: "meme",
@@ -127,6 +128,29 @@ const commands = [
     name: "leaderboard",
     description: "leaderboard"
   },
+  {
+    name: "shop",
+    description: "list of items you can buy",
+    options: [{
+      name: "list",
+      description: "list of shop",
+      type: ApplicationCommandOptionType.Subcommand
+    },
+    {
+      name: "buy",
+      description: "buy things from list with index",
+      type: ApplicationCommandOptionType.Subcommand,
+      options:[
+        {
+          name:"index",
+          description:"which item you want to buy",
+          type:ApplicationCommandOptionType.Integer
+        }
+      ]
+    },
+    
+  ]
+  }
 ];
 
 const rest = new REST({ version: '10' }).setToken(token);
@@ -175,7 +199,7 @@ client.on('interactionCreate', async interaction => {
     return
   }
   if (interaction.commandName === "leaderboard") {
-    await money.leaderboard(interaction,rest);
+    await money.leaderboard(interaction, rest);
     return
   }
   //help
@@ -197,20 +221,36 @@ client.on('interactionCreate', async interaction => {
     interaction.reply({ embeds: [money.injailEmbed] });
     return;
   }
+  //Shop subcommands
+  if (interaction.commandName === "shop") {
+    if(interaction.options._subcommand === "buy"){
+      shop.buy(interaction);
+      return
+    }
+    if(interaction.options._subcommand === "list"){
+      shop.list(interaction)
+      return
+    }
+  }
   if (interaction.commandName === "work") {
     await money.work(interaction);
+    return
   }
   if (interaction.commandName === "coinflip") {
     await money.coinflip(interaction);
+    return
   }
   if (interaction.commandName === "tictactoe") {
     tictactoe.tictactoe(interaction);
+    return
   }
   if (interaction.commandName === "rps") {
     await rps.rps(interaction);
+    return
   }
   if (interaction.commandName === "rob") {
     rob.rob(interaction);
+    return
   }
   if (interaction.commandName === "deposit") {
     await bank.deposit(interaction);
