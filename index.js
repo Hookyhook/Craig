@@ -144,13 +144,18 @@ const commands = [
         {
           name:"index",
           description:"which item you want to buy",
-          type:ApplicationCommandOptionType.Integer
+          type:ApplicationCommandOptionType.Integer,
+          required: true,
         }
       ]
     },
     
   ]
-  }
+  },
+  {
+    name: "inventory",
+    description: "showns you all the objects you have!"
+  },
 ];
 
 const rest = new REST({ version: '10' }).setToken(token);
@@ -200,6 +205,10 @@ client.on('interactionCreate', async interaction => {
   }
   if (interaction.commandName === "leaderboard") {
     await money.leaderboard(interaction, rest);
+    return
+  }
+  if (interaction.commandName === "inventory") {
+    await shop.inventory(interaction);
     return
   }
   //help
