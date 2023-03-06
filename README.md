@@ -1,4 +1,4 @@
-# **CRAIG**
+sp# **CRAIG**
 
 Craig is a discord bot for you and your friends. You can play some games and have a money system. With this money you can bet on games.
 

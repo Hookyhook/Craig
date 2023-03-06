@@ -71,7 +71,7 @@ exports.coinflip = async (interaction) => {
     let balance = await db.query("SELECT balance FROM money WHERE userid = ?", [
         interaction.user.id,
     ]);
-    if (balance.rows[0].balance <= interaction.options.get("bet").value) {
+    if (balance.rows[0].balance < interaction.options.get("bet").value) {
         const embed = new EmbedBuilder()
             .setColor(15548997)
             .setTitle("ERROR")
@@ -292,26 +292,118 @@ exports.injail = async (user) =>{
 exports.injailEmbed = new EmbedBuilder().setTitle("YOUR in JAIL").setColor(Colors.Red);
 
 exports.leaderboard = async (interaction,rest) => {
-    interaction.deferReply("loading...");
-    let res = await db.query(`SELECT CAST(userid as VARCHAR(100)) AS userid, balance, bankbalance,
-        (balance + bankbalance) AS total FROM money 
-        ORDER BY total DESC LIMIT ?`,[10]);
-    res = res.rows;
-    let leaderboardArr = new Array();
-    for (let i = 0; i < res.length; i++) {
-        const e = res[i];
-        const restRes = await rest.get(Routes.user(e.userid));
-        leaderboardArr.push({username: restRes.username,balance: e.total});
+    interaction.deferReply();
+    let dbres = await db.query("SELECT (balance + money.bankbalance) AS total,CAST(userid as VARCHAR(100)) AS userid FROM money ",[]);
+    // format dbres
+    dbres = dbres.rows;
+    for (let i = 0; i < dbres.length; i++) {
+        const element = dbres[i];
+        //check if they have items
+        element.items = "\u200b";
+        element.allMoney = element.total
+        let dbitems = await db.query("SELECT items.emogi, items.price FROM inventory INNER JOIN items ON items.id = inventory.item WHERE userid = ?",[element.userid])
+        if(dbitems.rows.length != 0){
+            // has itemsitems
+            dbitems.rows.forEach(async e => {
+                element.items += e.emogi;
+                element.allMoney += e.price;
+            })
+        }
+        
     }
-    console.log(leaderboardArr);
-    let valueMsg = "";
-    leaderboardArr.forEach((e,i) => {
-        valueMsg += "``"+(e.balance)+"$"+"``\t" + e.username +"\n";
-       
+    dbres = dbres.sort((a,b) => (a.allMoney < b.allMoney) ? 1 : ((b.allMoney < a.allMoney) ? -1 : 0));
+    let leaderboard = new EmbedBuilder().setTitle("Leaderboard");
+    for (let i = 1; i <= 5; i++) {
+        const element = dbres[i-1];
+        const user = await rest.get(Routes.user(element.userid));
+        leaderboard.addFields({name:"``"+i+":``"+user.username,value:String(element.total)+"$",inline:true},
+        {name:"Inventory",value:String(element.items),inline:true},
+        {name:"Total Value",value:String(element.allMoney),inline:true});
+    }
+    let buttons = new ActionRowBuilder().setComponents(new ButtonBuilder().setLabel("<--").setCustomId("back").setStyle(ButtonStyle.Success).setDisabled(true),
+    new ButtonBuilder().setLabel("-->").setCustomId("next").setStyle(ButtonStyle.Success).setDisabled(false));
+    let pageAmount = Math.ceil(dbres.length/5)
+    let pageLocation = 1;
+    await interaction.editReply({embeds:[leaderboard.setFooter({text:pageLocation+"/"+pageAmount})],components:[buttons]});
+
+    //buttons for leaderboard next page
+    
+    const collector = interaction.channel.createMessageComponentCollector();
+
+    //check time
+    let startTime = Date.now();
+    function checkTime() {
+        if (Date.now() - startTime >= 180000) {
+          startTime = Date.now();
+          let timeOutEmbed = new EmbedBuilder().setTitle("Closed").setDescription("This leaderboard was closed do to inactivity,or an loading error");
+          interaction.editReply({embeds: [timeOutEmbed], components:[]});
+          return;
+
+        }
+        else{
+            setTimeout(checkTime, 1000);
+        }
+      }
+      checkTime();
+    collector.on("collect", async i => {
+        let startTime = Date.now();
+        //check if right interactio 
+        if (i.message.interaction.id !== interaction.id) {
+            return
+        }
+        console.log(i.user.id +"   "+ interaction.user.id);
+        //check if right user
+        if(i.user.id !== interaction.user.id){
+            return
+        }
+        if(i.customId == "next"){
+            pageLocation++;
+            leaderboard.setFields().setFooter({text:pageLocation+"/"+pageAmount});
+            for (let i = ((pageLocation-1)*5)+1; i <= ((pageLocation)*5); i++) {
+                try{
+                    const element = dbres[i-1];
+                const user = await rest.get(Routes.user(element.userid));
+                leaderboard.addFields({name:"``"+i+":``"+user.username,value:String(element.total)+"$",inline:true},
+                {name:"Inventory",value:String(element.items),inline:true},
+                {name:"Total Value",value:String(element.allMoney) + "$",inline:true});
+                }
+                catch(err){
+                    console.log(err);
+                }
+                
+                
+            }
+            let backButton = new ButtonBuilder().setLabel("<--").setCustomId("back").setStyle(ButtonStyle.Success).setDisabled(false);
+            let nextButton = new ButtonBuilder().setLabel("-->").setCustomId("next").setStyle(ButtonStyle.Success);
+            if(pageLocation == pageAmount){
+                nextButton.setDisabled(true);
+            }
+            i.update({embeds:[leaderboard],components:[new ActionRowBuilder().setComponents(backButton,nextButton)]});
+        }
+        if(i.customId == "back"){
+            pageLocation--;
+            leaderboard.setFields().setFooter({text:pageLocation+"/"+pageAmount});
+            for (let i = ((pageLocation-1)*5)+1; i <= ((pageLocation)*5); i++) {
+                try{
+                    const element = dbres[i-1];
+                const user = await rest.get(Routes.user(element.userid));
+                leaderboard.addFields({name:"``"+i+"``"+user.username,value:String(element.total)+"$",inline:true},
+                {name:"Inventory",value:String(element.items),inline:true},
+                {name:"Total Value",value:String(element.allMoney) + "$",inline:true});
+                }
+                catch(err){
+                    console.log(err);
+                }
+            }
+            let backButton = new ButtonBuilder().setLabel("<--").setCustomId("back").setStyle(ButtonStyle.Success);
+            if(pageLocation == 1){
+                backButton.setDisabled(true);
+            }
+            let nextButton = new ButtonBuilder().setLabel("-->").setCustomId("next").setStyle(ButtonStyle.Success);
+            if(pageLocation == pageAmount){
+                nextButton.setDisabled(true);
+            }
+            i.update({embeds:[leaderboard],components:[new ActionRowBuilder().setComponents(backButton,nextButton)]});
+        }
     });
-
-
-    let replyEmbed = new EmbedBuilder().setTitle("LEADERBOARD").setColor(Colors.Blue);
-        replyEmbed.addFields({name:"Total Balance",value: valueMsg,inline:true});
-    interaction.editReply({embeds:[replyEmbed]});  
 }
