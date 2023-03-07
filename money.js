@@ -316,7 +316,7 @@ exports.leaderboard = async (interaction,rest) => {
     for (let i = 1; i <= 5; i++) {
         const element = dbres[i-1];
         const user = await rest.get(Routes.user(element.userid));
-        leaderboard.addFields({name:"``"+i+":``"+user.username,value:String(element.total)+"$",inline:true},
+        leaderboard.addFields({name:"``"+i+":``**"+user.username+"**",value:String(element.total)+"$",inline:true},
         {name:"Inventory",value:String(element.items),inline:true},
         {name:"Total Value",value:String(element.allMoney),inline:true});
     }
@@ -363,7 +363,7 @@ exports.leaderboard = async (interaction,rest) => {
                 try{
                     const element = dbres[i-1];
                 const user = await rest.get(Routes.user(element.userid));
-                leaderboard.addFields({name:"``"+i+":``"+user.username,value:String(element.total)+"$",inline:true},
+                leaderboard.addFields({name:"``"+i+":``**"+user.username+"**",value:String(element.total)+"$",inline:true},
                 {name:"Inventory",value:String(element.items),inline:true},
                 {name:"Total Value",value:String(element.allMoney) + "$",inline:true});
                 }
@@ -387,7 +387,7 @@ exports.leaderboard = async (interaction,rest) => {
                 try{
                     const element = dbres[i-1];
                 const user = await rest.get(Routes.user(element.userid));
-                leaderboard.addFields({name:"``"+i+"``"+user.username,value:String(element.total)+"$",inline:true},
+                leaderboard.addFields({name:"``"+i+":``**"+user.username+"**",value:String(element.total)+"$",inline:true},
                 {name:"Inventory",value:String(element.items),inline:true},
                 {name:"Total Value",value:String(element.allMoney) + "$",inline:true});
                 }

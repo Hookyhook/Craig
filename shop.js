@@ -1,23 +1,19 @@
-const offers = [
-    { item: "car", price: 5000, emoji: ":blue_car:" }, //-> uber
-    { item: "teacher bag", price: 10000, emoji: ":briefcase:" },
-    { item: "laptop", price: 30000, emoji: ":computer:" },
-    { item: "race car", price: 100000, emoji: ":race_car:" },
-    { item: "PC", price: 451000, emoji: ":desktop:" },
-    { item: "test tube", price: 978600, emoji: ":test_tube:" }, //chemist
-    { item: "gun", price: 18769420, emoji: ":gun:" }, // -> americaan
-];
 const db = require("./db.js");
 const {
     REST, Routes, Embed, EmbedBuilder, channelLink, ReactionUserManager, InteractionCollector, ApplicationCommandOptionType, moveElementInArray, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, Collector, Collection, Colors
 } = require("discord.js");
 
+
 exports.list = async (interaction) => {
     let res = new EmbedBuilder().setTitle("SHOP").setColor(Colors.Blurple);
+    let shop = await db.query("SELECT * FROM items",[]);
+    console.log(shop)
+    shop = shop.rows;
     let itemfield = "";
-    offers.forEach((e, i) => {
-        itemfield += "``" + (i + 1) + ":``" + e.item + e.emoji + " -> " + "``" + e.price + "$``" + "\n";
+    shop.forEach((e) => {
+        itemfield += "``" + (e.id) + ":``" + e.name + e.emogi + " -> " + "``" + e.price + "$``" + "\n";
     })
+    console.log(itemfield);
     res.addFields({ name: "ITEM", value: itemfield, inline: true });
     interaction.reply({ embeds: [res] });
 }
@@ -25,35 +21,27 @@ exports.list = async (interaction) => {
 exports.buy = async (interaction) => {
     let err = new EmbedBuilder().setTitle("Error").setColor(Colors.Red);
     const input = interaction.options.get("index").value ; //get input
-    if(input <=0 || input > offers.length){ // check if input exsiste
+    let shopAmm = await db.query("SELECT COUNT(*) AS amount FROM items",[]);
+    if(input <=0 || input > shopAmm.rows[0].amount){ // check if input exsiste
         interaction.reply({embeds: [err.setDescription("this is not an index!")],ephemeral: true});
         return
     }
-    //get index in array
-    const index = input-1;
-    //get item data
-    let item = offers[index];
+    //get item from db
+    let item = await db.query("SELECT * FROM items WHERE id = ?",[input]);
+    item = item.rows[0];
+
     //get items of user
     let res = await db.query("SELECT item FROM inventory WHERE userid = ?",[interaction.user.id]);
     //format items to strings
-    let owend = [];
-    res.rows.forEach(e => {
-        owend.push(e.item);
-    });
-    //chek if user contains selected item
-    console.log(owend);
-    console.log(owend.includes(item.item));
-    if(owend.includes(item.item)){
-        await interaction.reply({embeds:[err.setDescription("You already own a "+ item.item + item.emoji).setFooter({text:"Use /invetory to see what you own!"})]})
-        return;
-    }
+    
+    //check money
     res = await db.query("SELECT balance FROM money WHERE userid = ?",[interaction.user.id]);
     let balance = res.rows[0].balance;
     if(item.price > balance){
-        await interaction.reply({embeds:[err.setDescription("You don´t have enough money on hand! The " + item.emoji + " costs ``" + item.price + "$`` but you only have ``" + balance + "$`` on hand!").setFooter({text: "Use /withdraw to withdaw money from your bank account or /work to earn some more money!"})]});
+        await interaction.reply({embeds:[err.setDescription("You dont have enough money on hand! The " + item.emogi + " costs ``" + item.price + "$`` but you only have ``" + balance + "$`` on hand!").setFooter({text: "Use /withdraw to withdaw money from your bank account or /work to earn some more money!"})]});
         return;
     }
-    let resEmbed = new EmbedBuilder().setTitle("BUY "+ item.item).setDescription("Are you sure you want to buy the "+ item.item + item.emoji + "for ``" + item.price + "``").setColor(Colors.Red);
+    let resEmbed = new EmbedBuilder().setTitle("BUY "+ item.name).setDescription("Are you sure you want to buy the "+ item.name + item.emogi + "for ``" + item.price + "$``").setColor(Colors.Red);
     let buttons = new ActionRowBuilder().setComponents(new ButtonBuilder().setLabel("YES").setStyle(ButtonStyle.Danger).setCustomId("YES"),
     new ButtonBuilder().setLabel("NO").setStyle(ButtonStyle.Success).setCustomId("NO"));
     interaction.reply({embeds: [resEmbed],components:[buttons],ephemeral:true});
@@ -61,7 +49,6 @@ exports.buy = async (interaction) => {
     const collector = interaction.channel.createMessageComponentCollector();
     collector.on("collect", async i => {
         //check that it is the right user to be safe
-        console.log(i.customId);
         if (interaction.id != i.message.interaction.id) {
             return
         }
@@ -70,16 +57,16 @@ exports.buy = async (interaction) => {
         }
         //no
         if(i.customId == "NO"){
-            const noEmbed = new EmbedBuilder().setTitle("NOTHING HAPPEND!").setDescription("you didnt buy the "+ item.item + "!").setColor(Colors.Green);
+            const noEmbed = new EmbedBuilder().setTitle("NOTHING HAPPEND!").setDescription("you didnt buy the "+ item.name + "!").setColor(Colors.Green);
             await interaction.editReply({embeds:[noEmbed],ephemeral:true,components:[]});
             return;
         }
         if(i.customId == "YES"){
             let res = await db.query("UPDATE money SET balance = ? WHERE userid = ?",[(balance-item.price),(interaction.user.id)]);
             console.log(res);
-            res = await db.query("INSERT INTO `inventory`(userid, item) VALUES (?,?)",[interaction.user.id,item.item]);
+            res = await db.query("INSERT INTO `inventory`(userid, item) VALUES (?,?)",[interaction.user.id,item.id]);
             console.log(res);
-            const succesfulEmbed = new EmbedBuilder().setTitle("YOU BOUGHT "+ item.emoji).setDescription("You bought "+item.item+item.emoji+ "for ``"+item.price+"?``. You now have ``" + (balance-item.price)+ "$``").setColor(Colors.Green);
+            const succesfulEmbed = new EmbedBuilder().setTitle("YOU BOUGHT "+ item.emogi).setDescription("You bought "+item.name+item.emogi+ "for ``"+item.price+"$``. You now have ``" + (balance-item.price)+ "$``").setColor(Colors.Green);
             await interaction.editReply({embeds:[succesfulEmbed],ephemeral:true,components:[]});
             return;
         }
@@ -88,14 +75,11 @@ exports.buy = async (interaction) => {
 
 exports.inventory = async(interaction) => {
     // get items
-    let res = await db.query("SELECT item FROM inventory WHERE userid = ?",[interaction.user.id]);
+    let res = await db.query("SELECT inventory.item,items.name,items.price,items.emogi FROM inventory INNER JOIN items ON inventory.item = items.id WHERE inventory.userid = ?",[interaction.user.id]);
+    console.log(res);
     let resItem = ""
     res.rows.forEach(e => {
-        offers.forEach(l => {
-            if(e.item == l.item){
-                resItem += l.item + l.emoji + "\n";
-            }
-        });
+        resItem += e.emogi;
     });
     if(resItem == ""){
         await interaction.reply({embeds:[new EmbedBuilder().setTitle("NOTHIUNG IN HERE").setColor(Colors.Red).setFooter({text: "Use /shop buy to buy something!"})],ephemeral:true});
