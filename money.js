@@ -407,3 +407,39 @@ exports.leaderboard = async (interaction,rest) => {
         }
     });
 }
+
+exports.gift = async (interaction,rest) => {
+    let err = new EmbedBuilder().setTitle("ERROR").setColor(Colors.Red);
+    const gifter = {user:interaction.user};
+    const target = {user:interaction.options.get("target-user").user};
+    const amount = interaction.options.get("amount").value;
+    let gifterBalance = await db.query("SELECT balance FROM money WHERE userid = ?",[gifter.user.id]);
+    if(gifterBalance.rows.length === 0){
+        await interaction.reply({embeds:[err.setDescription("You are not registered in the Database").setFooter({text:"Use /work to register"})],ephemeral:true});
+        return
+    }
+    gifter.balance = gifterBalance.rows[0].balance;
+    let targetBalance = await db.query("SELECT balance FROM money WHERE userid = ?",[target.user.id]);
+    if(targetBalance.rows.length === 0){
+        await interaction.reply({embeds:[err.setDescription("The target is not in the db!").setFooter({text:"Use /work to register"})],ephemeral:true});
+        return
+    }
+    target.balance = targetBalance.rows[0].balance;
+    if(amount <= 0){
+        await interaction.reply({embeds:[err.setDescription("Brooooo... Technically that would be considered Robbery")],ephemeral:ture});
+        return
+    }
+    if(amount > gifter.balance){
+        await interaction.reply({embeds:[err.setDescription("Brooooo... You dont have that much money!")],ephemeral:true});
+        return
+    }
+    let gifterRes = new EmbedBuilder().setTitle("GIFTED").setColor(Colors.Green).addFields({name:"Gave Away:",value: "``"+amount+"$``",inline:true},
+    {name:"TO:",value: "``"+target.user.username+"$``",inline:true}).setFooter({text:"He will be notifided of this. ;)"});
+    let updateQuery = await db.query("UPDATE money SET balance = balance + ? WHERE userid = ?",[amount,target.user.id]);
+    updateQuery = await db.query("UPDATE money SET balance = balance - ? WHERE userid = ?",[amount,gifter.user.id]);
+    interaction.reply({embeds:[gifterRes],ephemeral:true});
+    console.log(gifter.user);
+    let targetEmbed = new EmbedBuilder().setColor(Colors.Green).setTitle("YOU WERE GIFTED").addFields({name:"Amount",value:"``"+amount+"$``"},{name:"BY",value:"``"+gifter.user.username+"``"})
+    .setImage(`https://cdn.discordapp.com/avatars/${gifter.user.id}/${gifter.user.avatar}`);
+    target.user.send({embeds:[targetEmbed]});
+}
