@@ -1,6 +1,0 @@
-//game
-    joinen
-//
-//button//
--->
-you dont have enough money;
